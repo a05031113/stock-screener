@@ -60,12 +60,12 @@ def format_candidate(row: pd.Series) -> str:
     gm_str = f"{gm:.0%}" if pd.notna(gm) else "N/A"
 
     return (
-        f"📈 <b>${row['ticker']}</b> | 總分 {row['total_score']}\n"
-        f"   💰 ${row['price']} | 相對量 {row['rel_vol']}x\n"
-        f"   📊 技術 {row['tech_score']}/12 | 基本面 {row['fund_score']}/7 | VCP +{row['vol_bonus']}\n"
-        f"   📈 1W {row['return_1w']} | 1M {row['return_1m']} | 3M {row['return_3m']}\n"
-        f"   🏢 營收成長 {rev_str} | 毛利率 {gm_str} | RS {row['rs_vs_spy']}\n"
-        f"   🎯 {row['tech_signals']}\n"
+        f"<b>${row['ticker']}</b> | 總分 {row['total_score']}\n"
+        f"  ${row['price']} | 相對量 {row['rel_vol']}x\n"
+        f"  技術 {row['tech_score']}/12 | 基本面 {row['fund_score']}/7 | VCP +{row['vol_bonus']}\n"
+        f"  1W {row['return_1w']} | 1M {row['return_1m']} | 3M {row['return_3m']}\n"
+        f"  營收 {rev_str} | 毛利率 {gm_str} | RS {row['rs_vs_spy']}\n"
+        f"  訊號: {row['tech_signals']}\n"
     )
 
 
@@ -75,9 +75,9 @@ def build_summary(df: pd.DataFrame) -> list[str]:
     """
     date_str = datetime.now().strftime("%Y/%m/%d")
     header = (
-        f"📊 <b>每週早期動能掃描 v2</b>\n"
-        f"🗓 {date_str} | 共 {len(df)} 檔候選\n"
-        f"📋 技術面 ≥8/12 + 基本面 ≥4/7\n"
+        f"<b>每週早期動能掃描 v2</b>\n"
+        f"{date_str} | 共 {len(df)} 檔候選\n"
+        f"技術面 ≥8/12 + 基本面 ≥4/7\n"
         f"{'─' * 30}\n"
     )
 
@@ -95,8 +95,8 @@ def build_summary(df: pd.DataFrame) -> list[str]:
     # 結尾提醒
     footer = (
         f"\n{'─' * 30}\n"
-        f"⚠️ 以上為技術+基本面自動篩選\n"
-        f"📋 請手動確認：業務故事、earnings call、機構持股趨勢"
+        f"以上為技術+基本面自動篩選\n"
+        f"請手動確認：業務故事、earnings call、機構持股趨勢"
     )
 
     if len(current) + len(footer) > 3800:
@@ -110,7 +110,7 @@ def build_summary(df: pd.DataFrame) -> list[str]:
 
 def notify_results(df: pd.DataFrame) -> None:
     if df.empty:
-        send_message("📊 本週動能掃描完成，<b>無候選股票</b>。\n市場可能整體偏弱或條件過嚴。")
+        send_message("本週動能掃描完成，<b>無候選股票</b>。\n市場可能整體偏弱或條件過嚴。")
         return
 
     # 只取 Top 20 避免訊息太多
