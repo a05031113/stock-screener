@@ -1,113 +1,74 @@
 """
-Stock Universe Manager
-取得 S&P500 + Nasdaq100 + Russell 2000 清單
+Finviz Pre-Filter
+用 Finviz screener 做粗篩，取代 Wikipedia 爬蟲
+篩選條件：美股、價格 > $5、有基本量能、技術面初步符合
 """
 
-import pandas as pd
-import yfinance as yf
-import requests
-import time
 import logging
-from io import StringIO
+import time
+from finvizfinance.screener.overview import Overview
 
 logger = logging.getLogger(__name__)
 
 
-def get_sp500() -> list[str]:
-    """從 Wikipedia 取得 S&P500 清單"""
+def _run_finviz_screen(filters: dict, description: str) -> list[str]:
+    """執行單次 Finviz screener 並回傳 ticker list"""
     try:
-        url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-        table = pd.read_html(url)[0]
-        tickers = table["Symbol"].str.replace(".", "-", regex=False).tolist()
-        logger.info(f"S&P500: {len(tickers)} tickers")
+        screener = Overview()
+        screener.set_filter(filters_dict=filters)
+        df = screener.screener_view()
+        if df is None or df.empty:
+            logger.warning(f"Finviz {description}: no results")
+            return []
+        tickers = df["Ticker"].tolist()
+        logger.info(f"Finviz {description}: {len(tickers)} tickers")
         return tickers
     except Exception as e:
-        logger.error(f"Failed to get S&P500: {e}")
+        logger.error(f"Finviz {description} failed: {e}")
         return []
 
 
-def get_nasdaq100() -> list[str]:
-    """從 Wikipedia 取得 Nasdaq100 清單"""
-    try:
-        url = "https://en.wikipedia.org/wiki/Nasdaq-100"
-        tables = pd.read_html(url)
-        # 找有 Ticker 欄位的 table
-        for table in tables:
-            cols = [c.lower() for c in table.columns]
-            if "ticker" in cols or "symbol" in cols:
-                col = "Ticker" if "Ticker" in table.columns else "Symbol"
-                tickers = table[col].dropna().str.replace(".", "-", regex=False).tolist()
-                logger.info(f"Nasdaq100: {len(tickers)} tickers")
-                return tickers
-        return []
-    except Exception as e:
-        logger.error(f"Failed to get Nasdaq100: {e}")
-        return []
-
-
-def get_russell2000() -> list[str]:
+def get_prefiltered_universe() -> list[str]:
     """
-    Russell 2000：用 iShares IWM ETF 的持股清單
-    免費且穩定，約 2000 檔小型股
+    用多組 Finviz filter 取得候選股票，合併去重。
+    分成兩組篩選以捕捉不同階段的動能股：
+      1. Stage 2 起步型：均線開始多頭排列
+      2. 底部突破型：從低點回升 + 放量
     """
-    try:
-        url = "https://www.ishares.com/us/products/239710/ISHARES-RUSSELL-2000-ETF/1467271812596.ajax?fileType=csv&fileName=IWM_holdings&dataType=fund"
-        headers = {"User-Agent": "Mozilla/5.0"}
-        resp = requests.get(url, headers=headers, timeout=30)
-        
-        # iShares CSV 前幾行是 metadata，跳過
-        lines = resp.text.split("\n")
-        # 找到 header 行（含 Ticker）
-        header_idx = next((i for i, l in enumerate(lines) if "Ticker" in l), None)
-        if header_idx is None:
-            logger.warning("iShares CSV format changed: 'Ticker' column not found")
-            return _get_russell2000_fallback()
-        csv_content = "\n".join(lines[header_idx:])
-        df = pd.read_csv(StringIO(csv_content))
-        
-        tickers = (
-            df["Ticker"]
-            .dropna()
-            .str.strip()
-            .str.replace(".", "-", regex=False)
-            .tolist()
-        )
-        # 過濾掉非股票行（如 "-", 空白）
-        tickers = [t for t in tickers if t and t != "-" and len(t) <= 5]
-        logger.info(f"Russell 2000: {len(tickers)} tickers")
-        return tickers
-    except Exception as e:
-        logger.warning(f"Failed to get Russell 2000 from iShares: {e}")
-        logger.info("Falling back to IWM components via yfinance")
-        return _get_russell2000_fallback()
 
+    # ── Filter A: Stage 2 起步型 ──
+    # 價格站上 SMA50，SMA50 > SMA200，相對量高
+    stage2_filters = {
+        "Price": "Over $5",
+        "Average Volume": "Over 200K",
+        "Relative Volume": "Over 1.5",
+        "50-Day Simple Moving Average": "Price above SMA50",
+        "200-Day Simple Moving Average": "Price above SMA200",
+        "Current Volume": "Over 200K",
+    }
 
-def _get_russell2000_fallback() -> list[str]:
-    """備用：從 yfinance 取 IWM 持股（較少但夠用）"""
-    try:
-        iwm = yf.Ticker("IWM")
-        # yfinance 沒有直接的持股 API，改回傳空
-        logger.warning("Russell 2000 fallback also failed, using empty list")
-        return []
-    except Exception:
-        return []
+    # ── Filter B: 底部突破型 ──
+    # 從 52 週低點回升 + 量能放大
+    base_breakout_filters = {
+        "Price": "Over $5",
+        "Average Volume": "Over 200K",
+        "Relative Volume": "Over 2",
+        "52-Week High/Low": "20% or more above Low",
+    }
 
+    # 執行兩組篩選
+    stage2_tickers = _run_finviz_screen(stage2_filters, "Stage 2")
+    time.sleep(2)  # Finviz rate limit between requests
+    base_tickers = _run_finviz_screen(base_breakout_filters, "Base Breakout")
 
-def get_universe(include_russell: bool = True) -> list[str]:
-    """
-    取得完整股票 universe，去除重複
-    """
-    sp500    = get_sp500()
-    nasdaq   = get_nasdaq100()
-    russell  = get_russell2000() if include_russell else []
-
-    all_tickers = list(dict.fromkeys(sp500 + nasdaq + russell))  # 保序去重
-    logger.info(f"Total universe: {len(all_tickers)} unique tickers")
+    # 合併去重（保序）
+    all_tickers = list(dict.fromkeys(stage2_tickers + base_tickers))
+    logger.info(f"Total pre-filtered universe: {len(all_tickers)} unique tickers")
     return all_tickers
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    tickers = get_universe(include_russell=True)
+    tickers = get_prefiltered_universe()
     print(f"Universe size: {len(tickers)}")
-    print(tickers[:10])
+    print(tickers[:20])
