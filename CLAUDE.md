@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Weekly momentum stock screener that scans S&P500 + Nasdaq100 + Russell 2000 for breakout and coiling patterns, then sends results via Telegram. Runs automatically every Friday after US market close via GitHub Actions.
+Early momentum stock screener that finds stocks in the early stage of major moves (like LITE before its parabolic run). Uses Finviz for pre-filtering, then applies a two-layer scoring system: technical (12-point) + fundamental (7-point). Sends results via Telegram every Friday after US market close via GitHub Actions.
 
 ## Commands
 
@@ -12,7 +12,7 @@ Weekly momentum stock screener that scans S&P500 + Nasdaq100 + Russell 2000 for 
 # Install dependencies
 pip install -r requirements.txt
 
-# Run full pipeline (screener + Telegram notification)
+# Run full pipeline (Finviz filter → scoring → Telegram)
 python main.py
 
 # Run screener only (no notification)
@@ -21,7 +21,7 @@ python screener.py
 # Test notification with latest CSV
 python notify.py
 
-# Test universe fetching
+# Test Finviz pre-filter only
 python universe.py
 ```
 
@@ -36,17 +36,26 @@ Both are required for notifications. Set as GitHub Secrets for CI.
 
 ## Architecture
 
-**Pipeline flow:** `main.py` → `screener.py` (scan) → `notify.py` (Telegram)
+**Pipeline flow:** `universe.py` (Finviz pre-filter) → `screener.py` (tech + fundamental scoring) → `notify.py` (Telegram)
 
-- **`universe.py`** — Fetches ticker lists from Wikipedia (S&P500, Nasdaq100) and iShares (Russell 2000 via IWM ETF holdings CSV). Deduplicates and merges into a single universe.
-- **`screener.py`** — Downloads 2 years of price history per ticker via `yfinance`, computes technical indicators (MAs, relative volume, Bollinger Band width, returns), then applies two pattern filters:
-  - **Breakout**: near 52-week high + volume surge + reasonable monthly gain (≥5/6 conditions)
-  - **Coiling**: compressed volatility + sudden volume + MA crossover (≥5/7 conditions)
-- **`notify.py`** — Formats top 20 candidates into HTML messages, splits at 3800 chars for Telegram's 4096 limit, sends via Telegram Bot API.
+- **`universe.py`** — Finviz pre-filter with two filter sets:
+  - **Stage 2**: Price > SMA50, SMA50 > SMA200, relative volume > 1.5
+  - **Base Breakout**: 20%+ above 52W low, relative volume > 2
+  - Narrows universe from ~7000 US stocks to ~200-300 candidates
+
+- **`screener.py`** — Two-layer scoring on pre-filtered candidates:
+  - **Technical (12 pts, threshold ≥8)**: Base formation (3), Stage 2 entry (4), volume accumulation (3), relative strength vs SPY (2)
+  - **Volatility bonus (2 pts)**: BB width percentile, ATR contraction
+  - **Fundamental (7 pts, threshold ≥4)**: Revenue growth/acceleration (3), EPS beat + margin + profitability (3), institutional holders (1)
+  - Only runs fundamental analysis on tickers that pass technical threshold
+
+- **`notify.py`** — Formats top 20 candidates with tech/fund scores into HTML messages, splits at 3800 chars for Telegram's 4096 limit, sends via Telegram Bot API with retry.
 
 ## Key Design Decisions
 
-- Sequential ticker processing with `time.sleep(0.3)` rate limiting for yfinance API
-- Russell 2000 fetching has iShares primary + yfinance fallback (fallback currently returns empty)
-- GitHub Actions workflow has 90-minute timeout to accommodate ~2000+ ticker scans
+- Finviz pre-filter reduces universe from ~7000 to ~300, cutting execution time from 60-80 min to ~10 min
+- Technical scoring runs before fundamental to minimize yfinance API calls
+- SPY benchmark downloaded once and reused for all relative strength calculations
+- GitHub Actions workflow has 30-minute timeout
+- CI sends Telegram alert on failure
 - Output CSVs are committed back to the repo by the CI bot

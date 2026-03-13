@@ -1,4 +1,4 @@
-name: Weekly Stock Screener
+name: Weekly Early Momentum Screener
 
 on:
   schedule:
@@ -9,7 +9,7 @@ on:
 jobs:
   screener:
     runs-on: ubuntu-latest
-    timeout-minutes: 90   # Russell 2000 約需 60~80 分鐘
+    timeout-minutes: 30   # Finviz pre-filter 大幅縮短執行時間
 
     steps:
       - name: Checkout
@@ -39,3 +39,15 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            -d text="❌ Weekly screener failed! Check: https://github.com/${REPO}/actions/runs/${RUN_ID}"

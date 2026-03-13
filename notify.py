@@ -53,18 +53,19 @@ def send_message(text: str) -> bool:
 
 def format_candidate(row: pd.Series) -> str:
     """單一候選股的格式"""
-    pattern_emoji = {
-        "Breakout":         "🚀",
-        "Coiling":          "🔋",
-        "Breakout+Coiling": "💥",
-    }
-    emoji = pattern_emoji.get(row["pattern"], "📈")
+    rev_growth = row.get("revenue_growth")
+    rev_str = f"{rev_growth:.0%}" if pd.notna(rev_growth) else "N/A"
+
+    gm = row.get("gross_margins")
+    gm_str = f"{gm:.0%}" if pd.notna(gm) else "N/A"
 
     return (
-        f"{emoji} <b>${row['ticker']}</b> | {row['pattern']}\n"
-        f"   價格: ${row['price']} | 相對量: {row['rel_vol']}x\n"
-        f"   1W: {row['return_1w']} | 1M: {row['return_1m']} | 3M: {row['return_3m']}\n"
-        f"   距高點: {row['pct_from_high']} | 訊號: {row['signals']}\n"
+        f"📈 <b>${row['ticker']}</b> | 總分 {row['total_score']}\n"
+        f"   💰 ${row['price']} | 相對量 {row['rel_vol']}x\n"
+        f"   📊 技術 {row['tech_score']}/12 | 基本面 {row['fund_score']}/7 | VCP +{row['vol_bonus']}\n"
+        f"   📈 1W {row['return_1w']} | 1M {row['return_1m']} | 3M {row['return_3m']}\n"
+        f"   🏢 營收成長 {rev_str} | 毛利率 {gm_str} | RS {row['rs_vs_spy']}\n"
+        f"   🎯 {row['tech_signals']}\n"
     )
 
 
@@ -73,41 +74,29 @@ def build_summary(df: pd.DataFrame) -> list[str]:
     把候選名單切成多則訊息（Telegram 單則上限 4096 字元）
     """
     date_str = datetime.now().strftime("%Y/%m/%d")
-    header   = (
-        f"📊 <b>每週動能掃描結果</b>\n"
+    header = (
+        f"📊 <b>每週早期動能掃描 v2</b>\n"
         f"🗓 {date_str} | 共 {len(df)} 檔候選\n"
+        f"📋 技術面 ≥8/12 + 基本面 ≥4/7\n"
         f"{'─' * 30}\n"
     )
 
     messages = []
-    current  = header
+    current = header
 
-    # 分類顯示
-    for pattern in ["Breakout+Coiling", "Breakout", "Coiling"]:
-        subset = df[df["pattern"] == pattern]
-        if subset.empty:
-            continue
-
-        section_title = f"\n<b>── {pattern} ({len(subset)}檔) ──</b>\n"
-        if len(current) + len(section_title) > 3800:
+    for _, row in df.iterrows():
+        block = format_candidate(row)
+        if len(current) + len(block) > 3800:
             messages.append(current)
-            current = section_title
+            current = block
         else:
-            current += section_title
-
-        for _, row in subset.iterrows():
-            block = format_candidate(row)
-            if len(current) + len(block) > 3800:
-                messages.append(current)
-                current = block
-            else:
-                current += block
+            current += block
 
     # 結尾提醒
     footer = (
         f"\n{'─' * 30}\n"
-        f"⚠️ 以上僅為技術面初篩\n"
-        f"📋 請手動確認：Earnings transcript、業務邏輯、機構持股變化"
+        f"⚠️ 以上為技術+基本面自動篩選\n"
+        f"📋 請手動確認：業務故事、earnings call、機構持股趨勢"
     )
 
     if len(current) + len(footer) > 3800:

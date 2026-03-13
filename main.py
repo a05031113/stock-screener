@@ -1,5 +1,5 @@
 """
-Entry point：screener + notify 一鍵執行
+Entry point：Finviz pre-filter → technical + fundamental scoring → Telegram
 """
 
 import logging
