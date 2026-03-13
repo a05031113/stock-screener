@@ -18,6 +18,9 @@ from universe import get_universe
 
 logger = logging.getLogger(__name__)
 
+# yfinance 對已下市股票會印 ERROR，屬預期情況，降級為 WARNING 避免 CI 噪音
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+
 OUTPUT_DIR = Path("output")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
