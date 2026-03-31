@@ -6,6 +6,7 @@ Finviz Pre-Filter
 
 import logging
 import time
+import pandas as pd
 from finvizfinance.screener.overview import Overview
 
 logger = logging.getLogger(__name__)
@@ -65,6 +66,44 @@ def get_prefiltered_universe() -> list[str]:
     all_tickers = list(dict.fromkeys(stage2_tickers + base_tickers))
     logger.info(f"Total pre-filtered universe: {len(all_tickers)} unique tickers")
     return all_tickers
+
+
+def get_weekly_up_universe() -> tuple[list[str], dict]:
+    """
+    Finviz 預篩：本週上漲 + 月漲的股票
+    回傳 (ticker list, metadata dict)
+    metadata: {ticker: {sector, industry, market_cap_label}}
+    """
+    filters = {
+        "Price": "Over $5",
+        "Performance": "Week Up",
+        "Performance 2": "Month Up",
+    }
+    try:
+        screener = Overview()
+        screener.set_filter(filters_dict=filters)
+        df = screener.screener_view()
+        if df is None or df.empty:
+            logger.warning("Finviz Weekly Up: no results")
+            return [], {}
+
+        tickers = df["Ticker"].tolist()
+        logger.info(f"Finviz Weekly Up: {len(tickers)} tickers")
+
+        # 解析 metadata
+        metadata = {}
+        for _, row in df.iterrows():
+            mc = row.get("Market Cap")
+            metadata[row["Ticker"]] = {
+                "sector": row.get("Sector", ""),
+                "industry": row.get("Industry", ""),
+                "market_cap": mc if pd.notna(mc) else 0,
+            }
+        return tickers, metadata
+
+    except Exception as e:
+        logger.error(f"Finviz Weekly Up failed: {e}")
+        return [], {}
 
 
 if __name__ == "__main__":

@@ -345,6 +345,181 @@ def run_screener(tickers: list[str], batch_delay: float = 0.3) -> pd.DataFrame:
     return df
 
 
+# ── 週 K 連漲篩選 ─────────────────────────────────────────────────────────
+
+def _market_cap_label(mc: float) -> str:
+    """市值分類"""
+    if mc >= 10e9:
+        return "Large"
+    elif mc >= 2e9:
+        return "Mid"
+    else:
+        return "Small"
+
+
+def screen_weekly_streak(ticker: str, meta: dict | None = None,
+                         weeks: int = 3, months: int = 2) -> dict | None:
+    """檢查 ticker 是否月 K 連 N 月 + 週 K 連 N 週上漲"""
+    try:
+        ticker_obj = yf.Ticker(ticker)
+
+        # ── 月 K 連漲檢查（粗篩，先做） ──
+        mdf = ticker_obj.history(period="6mo", interval="1mo")
+        if mdf.empty or len(mdf) < months + 1:
+            return None
+
+        # 去掉當前未完成的月（月初跑時最後一根是不完整的）
+        last_m = mdf.index[-1]
+        if last_m.day < 25:
+            mdf = mdf.iloc[:-1]
+        if len(mdf) < months + 1:
+            return None
+
+        m_closes = mdf["Close"].tail(months + 1).values
+        monthly_changes = [m_closes[i + 1] / m_closes[i] - 1 for i in range(months)]
+        if not all(c > 0 for c in monthly_changes):
+            return None
+
+        # ── 週 K 連漲檢查（細篩） ──
+        wdf = ticker_obj.history(period="2mo", interval="1wk")
+        if wdf.empty or len(wdf) < weeks + 1:
+            return None
+
+        last_date = wdf.index[-1]
+        if last_date.weekday() < 4:  # 去掉未完成的本週
+            wdf = wdf.iloc[:-1]
+        if len(wdf) < weeks + 1:
+            return None
+
+        w_closes = wdf["Close"].tail(weeks + 1).values
+        weekly_changes = [w_closes[i + 1] / w_closes[i] - 1 for i in range(weeks)]
+        if not all(c > 0 for c in weekly_changes):
+            return None
+
+        price = float(w_closes[-1])
+        total_gain = w_closes[-1] / w_closes[0] - 1
+        quote_type = ticker_obj.fast_info.get("quoteType", "EQUITY")
+
+        # Metadata from Finviz
+        sector = meta.get("sector", "") if meta else ""
+        industry = meta.get("industry", "") if meta else ""
+        mc = meta.get("market_cap", 0) if meta else 0
+
+        return {
+            "ticker": ticker,
+            "price": round(price, 2),
+            "total_gain": f"{total_gain:.1%}",
+            "w1": f"{weekly_changes[0]:.1%}",
+            "w2": f"{weekly_changes[1]:.1%}",
+            "w3": f"{weekly_changes[2]:.1%}",
+            "m1": f"{monthly_changes[0]:.1%}",
+            "m2": f"{monthly_changes[1]:.1%}",
+            "sector": sector,
+            "industry": industry,
+            "cap_label": _market_cap_label(mc),
+            "is_etf": quote_type == "ETF",
+        }
+
+    except Exception as e:
+        logger.debug(f"Weekly streak skip {ticker}: {e}")
+        return None
+
+
+def _spy_weekly_gain(weeks: int = 3) -> float:
+    """取 SPY 近 N 週的總漲幅，作為相對強度門檻"""
+    df = yf.Ticker("SPY").history(period="2mo", interval="1wk")
+    if df.empty or len(df) < weeks + 1:
+        return 0.0
+    last_date = df.index[-1]
+    if last_date.weekday() < 4:
+        df = df.iloc[:-1]
+    if len(df) < weeks + 1:
+        return 0.0
+    closes = df["Close"].tail(weeks + 1).values
+    return closes[-1] / closes[0] - 1
+
+
+def run_weekly_streak_screener(tickers: list[str], metadata: dict | None = None,
+                               weeks: int = 3,
+                               batch_delay: float = 0.1) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """對 tickers 跑週 K 連漲篩選，只保留漲幅 > SPY 的，回傳 (個股 df, ETF df)"""
+    # 先取 SPY 基準
+    spy_gain = _spy_weekly_gain(weeks)
+    logger.info(f"SPY {weeks}-week gain: {spy_gain:.1%}")
+
+    results = []
+    total = len(tickers)
+    logger.info(f"Weekly streak screening {total} tickers...")
+
+    for i, ticker in enumerate(tickers, 1):
+        meta = metadata.get(ticker) if metadata else None
+        result = screen_weekly_streak(ticker, meta, weeks)
+        if result:
+            results.append(result)
+        if i % 100 == 0:
+            logger.info(f"[{i}/{total}] streak scan processed...")
+        time.sleep(batch_delay)
+
+    df = pd.DataFrame(results)
+    if df.empty:
+        logger.info(f"Weekly streak: 0 tickers with {weeks} consecutive up weeks")
+        return pd.DataFrame(), pd.DataFrame()
+
+    # 過濾：三週總漲幅必須 > SPY 且 > 2%
+    df["_sort"] = df["total_gain"].str.rstrip("%").astype(float)
+    spy_pct = spy_gain * 100
+    before = len(df)
+    df = df[(df["_sort"] > spy_pct) & (df["_sort"] > 2.0)]
+    logger.info(f"Filters: {before} → {len(df)} (beat SPY {spy_gain:.1%}, >2%)")
+
+    if df.empty:
+        return pd.DataFrame(), pd.DataFrame()
+
+    df = df.sort_values("_sort", ascending=False).drop(columns=["_sort"])
+
+    # 比對上期結果，標記連續上榜
+    prev_tickers = _load_prev_streak_tickers()
+    df["repeat"] = df["ticker"].isin(prev_tickers)
+    repeat_count = df["repeat"].sum()
+    logger.info(f"Repeat from last week: {repeat_count}/{len(df)}")
+
+    # 存檔供下次比對
+    _save_streak_results(df)
+
+    # 拆分個股與 ETF
+    stocks = df[~df["is_etf"]].drop(columns=["is_etf"]).reset_index(drop=True)
+    etfs = df[df["is_etf"]].drop(columns=["is_etf"]).reset_index(drop=True)
+
+    logger.info(
+        f"Weekly streak: {len(stocks)} stocks + {len(etfs)} ETFs"
+        f" (beat SPY, {weeks} consecutive up weeks)"
+    )
+    return stocks, etfs
+
+
+def _load_prev_streak_tickers() -> set[str]:
+    """讀取上一期的 streak CSV，回傳 ticker set"""
+    csv_files = sorted(OUTPUT_DIR.glob("streak_*.csv"), reverse=True)
+    if not csv_files:
+        return set()
+    try:
+        prev = pd.read_csv(csv_files[0])
+        tickers = set(prev["ticker"].tolist())
+        logger.info(f"Loaded previous streak: {csv_files[0].name} ({len(tickers)} tickers)")
+        return tickers
+    except Exception as e:
+        logger.warning(f"Failed to load previous streak: {e}")
+        return set()
+
+
+def _save_streak_results(df: pd.DataFrame) -> None:
+    """存檔本期 streak 結果"""
+    date_str = datetime.now().strftime("%Y%m%d")
+    csv_path = OUTPUT_DIR / f"streak_{date_str}.csv"
+    df.to_csv(csv_path, index=False)
+    logger.info(f"Saved streak results → {csv_path}")
+
+
 def save_results(df: pd.DataFrame) -> Path:
     date_str = datetime.now().strftime("%Y%m%d")
     csv_path = OUTPUT_DIR / f"candidates_{date_str}.csv"

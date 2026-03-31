@@ -108,6 +108,106 @@ def build_summary(df: pd.DataFrame) -> list[str]:
     return messages
 
 
+def format_streak_candidate(row: pd.Series) -> str:
+    """週 K 連漲候選股的格式"""
+    sector = row.get("sector", "")
+    sector_str = f" | {sector}" if sector else ""
+    repeat_str = " [連續上榜]" if row.get("repeat") else ""
+
+    return (
+        f"<b>${row['ticker']}</b> ${row['price']}"
+        f" | 三週 {row['total_gain']}{sector_str}{repeat_str}\n"
+        f"  W: {row['w1']} | {row['w2']} | {row['w3']}\n"
+        f"  M: {row['m1']} | {row['m2']}\n"
+    )
+
+
+def build_streak_summary(df: pd.DataFrame, title: str) -> list[str]:
+    """週 K 連漲結果，按市值分類切成多則訊息"""
+    date_str = datetime.now().strftime("%Y/%m/%d")
+    header = (
+        f"<b>{title}</b>\n"
+        f"{date_str} | 共 {len(df)} 檔\n"
+        f"{'─' * 30}\n"
+    )
+
+    messages = []
+    current = header
+
+    # 如果有 cap_label 欄位，按市值分組
+    has_cap = "cap_label" in df.columns
+    if has_cap:
+        cap_order = ["Large", "Mid", "Small"]
+        for cap in cap_order:
+            group = df[df["cap_label"] == cap]
+            if group.empty:
+                continue
+            cap_header = f"\n<b>[{cap} Cap] {len(group)} 檔</b>\n"
+            if len(current) + len(cap_header) > 3800:
+                messages.append(current)
+                current = cap_header
+            else:
+                current += cap_header
+
+            for _, row in group.iterrows():
+                block = format_streak_candidate(row)
+                if len(current) + len(block) > 3800:
+                    messages.append(current)
+                    current = block
+                else:
+                    current += block
+    else:
+        for _, row in df.iterrows():
+            block = format_streak_candidate(row)
+            if len(current) + len(block) > 3800:
+                messages.append(current)
+                current = block
+            else:
+                current += block
+
+    if current:
+        messages.append(current)
+
+    return messages
+
+
+def _top_per_cap(df: pd.DataFrame, n: int = 10) -> pd.DataFrame:
+    """每個市值分類取前 n 檔（按三週漲幅排序）"""
+    if "cap_label" not in df.columns:
+        return df.head(n * 3)
+    groups = []
+    for cap in ["Large", "Mid", "Small"]:
+        group = df[df["cap_label"] == cap].head(n)
+        groups.append(group)
+    return pd.concat(groups, ignore_index=True)
+
+
+def notify_streak_results(stocks_df: pd.DataFrame, etfs_df: pd.DataFrame) -> None:
+    """分別發送個股與 ETF 的週 K 連漲結果"""
+    if stocks_df.empty and etfs_df.empty:
+        send_message("本週無連三週上漲的股票。")
+        return
+
+    # 個股：每個市值分類取前 10（最多 30）
+    if not stocks_df.empty:
+        top_stocks = _top_per_cap(stocks_df, n=10)
+        messages = build_streak_summary(top_stocks, "月K連二 + 週K連三 - 個股")
+        for i, msg in enumerate(messages, 1):
+            logger.info(f"Sending streak stocks {i}/{len(messages)}")
+            if not send_message(msg):
+                logger.error(f"Failed to send streak stocks message {i}")
+                break
+
+    # ETF（前 20）
+    if not etfs_df.empty:
+        messages = build_streak_summary(etfs_df.head(20), "月K連二 + 週K連三 - ETF 族群趨勢")
+        for i, msg in enumerate(messages, 1):
+            logger.info(f"Sending streak ETFs {i}/{len(messages)}")
+            if not send_message(msg):
+                logger.error(f"Failed to send streak ETFs message {i}")
+                break
+
+
 def notify_results(df: pd.DataFrame) -> None:
     if df.empty:
         send_message("本週動能掃描完成，<b>無候選股票</b>。\n市場可能整體偏弱或條件過嚴。")

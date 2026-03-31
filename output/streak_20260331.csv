@@ -1,0 +1,12 @@
+ticker,price,total_gain,w1,w2,w3,m1,m2,sector,industry,cap_label,is_etf,repeat
+AGX,566.62,36.8%,10.6%,3.4%,19.6%,10.8%,30.2%,Industrials,Engineering & Construction,Mid,False,True
+APA,44.39,35.8%,5.5%,13.5%,13.5%,8.0%,16.1%,Energy,Oil & Gas E&P,Large,False,True
+ADTN,12.93,34.8%,3.6%,15.3%,12.8%,6.1%,10.6%,Technology,Communication Equipment,Small,False,True
+AIBD,10.76,17.0%,2.5%,4.0%,9.7%,3.4%,17.1%,Financial,Exchange Traded Fund,Small,True,True
+AR,45.15,16.3%,5.6%,5.1%,4.8%,5.5%,1.2%,Energy,Oil & Gas E&P,Large,False,True
+BGR,17.39,11.3%,3.6%,2.6%,4.7%,15.5%,2.2%,Financial,Closed-End Fund - Equity,Small,False,True
+ARLP,28.99,9.4%,2.9%,2.5%,3.7%,2.5%,11.2%,Energy,Thermal Coal,Mid,False,True
+BESF,42.11,9.3%,0.8%,4.1%,4.1%,16.0%,5.2%,Financial,Exchange Traded Fund,Small,True,True
+AVS,10.5,8.4%,2.4%,3.8%,2.0%,5.3%,2.9%,Financial,Exchange Traded Fund,Small,True,True
+ATMP,35.15,4.3%,0.3%,1.2%,2.7%,8.9%,9.6%,Financial,Exchange Traded Fund,Small,True,True
+ATLO,27.61,3.6%,0.0%,0.2%,3.4%,14.7%,3.5%,Financial,Banks - Regional,Small,False,True
