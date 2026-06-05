@@ -1,0 +1,90 @@
+ticker,price,total_gain,w1,w2,w3,m1,m2,sector,industry,cap_label,is_etf,repeat
+APPS,8.78,117.3%,4.5%,7.8%,93.0%,22.6%,148.7%,Technology,Software - Application,Small,False,False
+JXG,8.2,110.3%,67.4%,10.7%,13.4%,2.1%,113.0%,Consumer Cyclical,Apparel Manufacturing,Small,False,False
+AGL,92.28,70.2%,50.7%,5.7%,6.8%,253.4%,230.2%,Healthcare,Medical Care Facilities,Small,False,False
+GRDX,5.61,64.0%,13.2%,25.1%,15.9%,24.3%,123.5%,Healthcare,Biotechnology,Small,False,False
+VSH,52.05,51.9%,8.7%,26.9%,10.2%,61.9%,79.7%,Technology,Semiconductors,Mid,False,False
+MRVU,132.4,40.8%,6.8%,21.9%,8.1%,168.0%,47.2%,Financial,Exchange Traded Fund,Small,True,False
+MVLL,100.57,39.8%,6.4%,21.8%,7.8%,166.2%,45.8%,Financial,Exchange Traded Fund,Small,True,False
+HPE,43.04,37.3%,5.6%,13.5%,14.5%,21.6%,49.6%,Technology,Communication Equipment,Large,False,True
+TTRX,5.2,37.2%,6.9%,26.7%,1.4%,15.3%,40.9%,Healthcare,Biotechnology,Small,False,False
+FPS,54.66,35.4%,11.5%,6.4%,14.1%,28.5%,45.3%,Industrials,Electrical Equipment & Parts,Large,False,False
+BZH,25.39,35.3%,17.8%,10.1%,4.2%,12.2%,17.6%,Consumer Cyclical,Residential Construction,Small,False,False
+ELIL,26.98,34.7%,11.9%,12.5%,7.0%,1.7%,37.5%,Financial,Exchange Traded Fund,Small,True,False
+NMAX,8.51,34.2%,13.6%,5.0%,12.6%,20.7%,35.1%,Communication Services,Broadcasting,Small,False,False
+CORT,69.49,32.9%,7.8%,6.8%,15.4%,15.4%,49.4%,Healthcare,Biotechnology,Mid,False,True
+BAND,64.97,30.2%,8.2%,13.7%,5.8%,106.6%,76.5%,Technology,Software - Infrastructure,Mid,False,True
+NSIT,106.38,27.0%,6.1%,9.9%,8.9%,8.8%,45.9%,Technology,Electronics & Computer Distribution,Mid,False,False
+PENG,55.83,26.2%,5.9%,13.6%,4.9%,72.8%,83.6%,Technology,Information Technology Services,Mid,False,False
+SXC,9.01,25.0%,4.1%,11.9%,7.3%,4.8%,32.1%,Basic Materials,Coking Coal,Small,False,True
+CSCO,120.42,24.7%,22.4%,1.9%,0.0%,17.9%,32.3%,Technology,Communication Equipment,Large,False,False
+PSIG,8.3,23.9%,8.2%,5.8%,8.2%,1.6%,33.4%,Industrials,Integrated Freight & Logistics,Small,False,False
+HSPT,9.66,23.1%,9.6%,1.7%,10.4%,43.4%,4.4%,Financial,Shell Companies,Small,False,False
+HAE,67.81,23.0%,2.1%,16.3%,3.5%,6.6%,12.8%,Healthcare,Medical Devices,Mid,False,False
+FTNT,137.97,21.0%,7.6%,9.1%,3.0%,3.2%,63.6%,Technology,Software - Infrastructure,Large,False,True
+MRVL,205.0,20.5%,4.0%,11.0%,4.4%,66.7%,24.2%,Technology,Semiconductors,Large,False,True
+CVLG,39.7,19.4%,3.1%,9.2%,6.1%,28.7%,13.9%,Industrials,Trucking,Small,False,False
+STHH,136.58,18.1%,5.5%,8.8%,2.9%,58.2%,25.7%,Financial,Exchange Traded Fund,Small,True,True
+KNX,75.63,18.1%,7.8%,1.5%,7.9%,13.1%,16.5%,Industrials,Trucking,Large,False,False
+PTRN,18.79,18.0%,3.7%,10.4%,3.1%,8.4%,39.5%,Technology,Software - Application,Mid,False,True
+BWA,71.65,17.1%,3.1%,4.1%,9.1%,5.3%,26.1%,Consumer Cyclical,Auto Parts,Large,False,False
+STM,69.31,17.1%,3.8%,8.9%,3.7%,60.0%,25.7%,Technology,Semiconductors,Large,False,True
+LLII,22.99,16.9%,6.3%,7.7%,2.1%,2.2%,13.4%,Financial,Exchange Traded Fund,Small,True,False
+LLY,1105.0,16.7%,6.0%,6.2%,3.8%,1.6%,18.2%,Healthcare,Drug Manufacturers - General,Large,False,False
+IART,16.04,15.2%,1.3%,7.1%,6.2%,11.9%,52.2%,Healthcare,Medical Devices,Small,False,False
+SNDR,35.34,14.9%,3.9%,4.6%,5.8%,18.4%,13.7%,Industrials,Trucking,Mid,False,False
+ATEX,64.02,14.5%,2.0%,11.4%,0.7%,26.5%,32.5%,Communication Services,Telecom Services,Small,False,True
+GEN,25.79,14.3%,3.4%,5.8%,4.5%,2.4%,33.7%,Technology,Software - Infrastructure,Large,False,False
+WERN,41.51,14.0%,2.4%,6.6%,4.3%,25.4%,13.1%,Industrials,Trucking,Mid,False,False
+ODFL,224.86,13.5%,2.4%,3.6%,7.0%,8.9%,6.0%,Industrials,Trucking,Large,False,False
+MSGS,374.29,13.4%,6.5%,0.7%,5.8%,6.6%,9.3%,Communication Services,Entertainment,Mid,False,False
+HTLD,14.99,13.4%,0.6%,7.9%,4.5%,28.9%,12.0%,Industrials,Trucking,Small,False,False
+NTNX,52.07,13.2%,0.7%,1.7%,10.5%,7.6%,27.3%,Technology,Software - Infrastructure,Large,False,False
+ARCB,136.69,13.1%,1.5%,1.5%,9.7%,29.7%,7.1%,Industrials,Trucking,Mid,False,False
+ORA,137.23,12.9%,8.1%,1.5%,2.9%,2.8%,19.4%,Utilities,Utilities - Renewable,Mid,False,True
+MDB,335.55,12.0%,4.2%,4.5%,2.9%,2.5%,33.8%,Technology,Software - Infrastructure,Large,False,False
+CNCG,29.26,11.9%,7.5%,2.7%,1.4%,158.8%,20.8%,Financial,Exchange Traded Fund,Small,True,False
+RVER,34.87,11.8%,1.6%,2.6%,7.2%,9.1%,16.5%,Financial,Exchange Traded Fund,Small,True,False
+NGVC,29.36,11.8%,7.5%,1.3%,2.6%,12.7%,1.4%,Consumer Defensive,Grocery Stores,Small,False,False
+TFII,154.12,10.8%,1.5%,4.9%,4.1%,32.4%,7.6%,Industrials,Trucking,Large,False,False
+GCBC,26.24,10.4%,3.9%,1.5%,4.7%,7.3%,9.1%,Financial,Banks - Regional,Small,False,False
+MTRN,219.9,10.4%,2.8%,4.9%,2.3%,27.1%,19.7%,Basic Materials,Other Industrial Metals & Mining,Mid,False,False
+EXTR,26.51,10.3%,2.6%,3.8%,3.6%,46.5%,20.0%,Technology,Communication Equipment,Mid,False,True
+RPRX,55.76,10.3%,4.1%,3.6%,2.3%,4.4%,11.3%,Healthcare,Biotechnology,Large,False,True
+WRLD,165.09,10.3%,2.3%,4.4%,3.2%,9.0%,12.2%,Financial,Credit Services,Small,False,False
+ST,49.39,10.2%,7.9%,0.5%,1.6%,18.2%,18.6%,Technology,Scientific & Technical Instruments,Mid,False,False
+GPRK,10.25,10.1%,2.7%,1.6%,5.6%,2.3%,5.9%,Energy,Oil & Gas E&P,Small,False,False
+GS,1021.06,9.5%,1.3%,5.1%,2.9%,9.8%,11.0%,Financial,Capital Markets,Large,False,False
+BBSI,32.54,9.2%,0.6%,4.9%,3.5%,8.4%,3.2%,Industrials,Staffing & Employment Services,Small,False,False
+ATEN,30.14,8.6%,0.5%,4.6%,3.4%,15.4%,13.0%,Technology,Software - Infrastructure,Mid,False,False
+H,181.21,8.2%,0.7%,3.2%,4.1%,16.6%,8.2%,Consumer Cyclical,Lodging,Large,False,False
+MSGE,70.53,8.1%,4.7%,1.9%,1.3%,13.6%,5.4%,Communication Services,Entertainment,Mid,False,False
+HSIC,76.58,8.1%,2.7%,2.0%,3.2%,1.2%,2.7%,Healthcare,Medical Distribution,Mid,False,False
+NVRI,20.75,7.7%,0.7%,1.1%,5.9%,0.4%,5.4%,Industrials,Waste Management,Small,False,False
+KCCA,16.07,7.5%,2.3%,3.1%,1.9%,1.2%,7.1%,Financial,Exchange Traded Fund,Small,True,False
+PSMT,169.99,7.4%,0.6%,3.4%,3.2%,4.3%,8.3%,Consumer Defensive,Discount Stores,Mid,False,False
+MMM,153.13,7.4%,2.0%,4.3%,1.0%,0.9%,4.5%,Industrials,Conglomerates,Large,False,False
+ARGX,835.99,6.9%,2.2%,0.9%,3.7%,7.0%,6.9%,Healthcare,Biotechnology,Large,False,False
+BNY,139.43,6.8%,3.5%,3.1%,0.2%,13.3%,4.2%,Financial,Banks - Diversified,Large,False,False
+CNC,59.6,6.5%,4.1%,1.5%,0.8%,64.0%,11.0%,Healthcare,Healthcare Plans,Large,False,False
+OVBC,48.05,6.3%,0.3%,4.1%,1.8%,1.5%,8.5%,Financial,Banks - Regional,Small,False,False
+CNI,118.55,6.2%,0.1%,2.2%,3.8%,9.8%,5.7%,Industrials,Railroads,Large,False,False
+IVT,33.13,5.7%,0.0%,4.9%,0.7%,6.3%,3.1%,Real Estate,REIT - Retail,Mid,False,False
+AAMI,72.31,5.4%,0.3%,4.0%,1.0%,24.0%,7.4%,Financial,Asset Management,Mid,False,False
+AUBN,25.0,5.3%,1.1%,2.1%,2.0%,1.5%,4.3%,Financial,Banks - Regional,Small,False,False
+MSM,109.47,5.0%,0.4%,1.8%,2.8%,10.8%,8.1%,Industrials,Industrial Distribution,Mid,False,False
+IHE,91.72,4.9%,0.5%,4.2%,0.2%,1.4%,4.7%,Financial,Exchange Traded Fund,Small,True,False
+EXEL,50.48,4.8%,4.1%,0.0%,0.7%,3.7%,13.5%,Healthcare,Biotechnology,Large,False,False
+HIW,26.1,4.7%,0.2%,0.7%,3.8%,13.5%,7.4%,Real Estate,REIT - Office,Mid,False,False
+CDRO,9.38,4.2%,3.1%,0.5%,0.6%,8.1%,3.2%,Consumer Cyclical,Gambling,Small,False,False
+KDP,30.03,4.2%,0.3%,0.7%,3.1%,12.6%,2.1%,Consumer Defensive,Beverages - Non-Alcoholic,Large,False,False
+STT,155.64,4.1%,2.2%,0.7%,1.1%,20.8%,2.5%,Financial,Asset Management,Large,False,False
+VHT,279.61,4.0%,0.6%,3.2%,0.1%,0.4%,2.6%,Financial,Exchange Traded Fund,Small,True,False
+FHLC,72.25,4.0%,0.7%,3.2%,0.1%,0.4%,2.6%,Financial,Exchange Traded Fund,Small,True,False
+HURC,17.17,3.9%,0.7%,2.9%,0.3%,13.9%,2.4%,Industrials,Specialty Industrial Machinery,Small,False,False
+PJP,109.63,3.9%,0.1%,3.2%,0.5%,1.5%,4.4%,Financial,Exchange Traded Fund,Small,True,False
+LGDX,25.28,3.2%,0.4%,1.0%,1.6%,10.3%,5.1%,Financial,Exchange Traded Fund,Small,True,False
+DFLV,39.11,3.0%,0.2%,1.9%,0.9%,6.7%,3.0%,Financial,Exchange Traded Fund,Small,True,False
+RLGT,8.49,2.7%,0.2%,0.6%,1.8%,19.3%,1.0%,Industrials,Integrated Freight & Logistics,Small,False,False
+DGRO,74.92,2.6%,0.5%,2.0%,0.1%,5.5%,1.7%,Financial,Exchange Traded Fund,Small,True,False
+RFDA,69.94,2.6%,0.1%,2.0%,0.5%,9.7%,2.2%,Financial,Exchange Traded Fund,Small,True,False
