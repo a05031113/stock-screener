@@ -28,9 +28,6 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run screener
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python main.py
 
       - name: Commit results
@@ -43,14 +40,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Notify on failure
-        if: failure()
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
-          REPO: ${{ github.repository }}
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            -d chat_id="${TELEGRAM_CHAT_ID}" \
-            -d text="❌ Weekly screener failed! Check: https://github.com/${REPO}/actions/runs/${RUN_ID}"
+      # 失敗告警：GitHub 預設會寄 email 給 repo owner（Actions 失敗通知），
+      # 週六早上的敘事發酵 routine 也會偵測 CSV 過期並在報告中註明。

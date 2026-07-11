@@ -1,0 +1,41 @@
+name: Fermentation Report Notify
+
+# 雲端 routine 每週六將敘事發酵週報 push 到 fermentation-reports 分支後，
+# 這個 workflow 用既有的 Telegram bot 發通知（取代舊的原始篩選結果推播）。
+
+on:
+  push:
+    branches: [fermentation-reports]
+    paths: ['reports/**']
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send Telegram notification
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          REPO: ${{ github.repository }}
+        run: |
+          LATEST=$(ls reports/fermentation_*.md 2>/dev/null | sort | tail -1)
+          if [ -z "$LATEST" ]; then
+            echo "No report found, skipping"
+            exit 0
+          fi
+          NAME=$(basename "$LATEST" .md)
+          URL="https://github.com/${REPO}/blob/fermentation-reports/${LATEST}"
+          # 抓報告裡的總覽表前幾列當摘要（存在才附）
+          SUMMARY=$(grep -m 8 '^|' "$LATEST" || true)
+          TEXT=$(printf '📊 敘事發酵週報 %s\n%s\n\n%s' "$NAME" "$URL" "$SUMMARY")
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode chat_id="${TELEGRAM_CHAT_ID}" \
+            --data-urlencode text="${TEXT}"
