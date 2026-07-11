@@ -6,7 +6,7 @@ name: Fermentation Report Notify
 on:
   push:
     branches: [fermentation-reports]
-    paths: ['reports/**']
+    paths: ['reports/fermentation_*.md']  # 只有週報觸發通知；profiles/ 的逐檔 commit 不觸發
 
 permissions:
   contents: read
