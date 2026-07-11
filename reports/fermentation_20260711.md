@@ -8,24 +8,26 @@
 
 | Ticker | 來源 | Sector | 發酵分數 | 一句話主題 | 審查結論 |
 |---|---|---|---|---|---|
-| BNED | candidates | Consumer Discretionary（校園零售） | **8** | 破產重組後轉型 inclusive-access 課程材料訂閱模式的翻身股，覆蓋分析師僅 2-4 家 | Partial |
-| MRVI | candidates | Healthcare（生命科學工具/mRNA試劑） | **7** | 疫情後去庫存壓力解除，mRNA/核酸試劑與 CDMO 訂單回溫 | Partial |
-| OPRT | candidates | Financials（次級消費金融） | **7** | 走出多年信用損失循環轉為 GAAP 獲利，新銀行合作夥伴打開高利率放款成長空間 | Partial |
-| LEVI | candidates | Consumer Discretionary（服飾） | 6 | 牛仔褲品牌靠 DTC/國際市場毛利率回升，連 2 季上修財測 | Partial |
-| PENG | candidates | Technology（AI 記憶體/資料中心基礎設施） | 6 | AI 伺服器記憶體/HBM 需求推動連 2 季財測大幅上修，但股價漲幅已超前預估上修速度 | Partial |
-| AZZ | candidates | Industrials（金屬鍍鋅/塗層） | 5 | 資料中心與電網基礎設施建設帶動鍍鋅需求，剛繳出財報超標並上修財測 | Partial |
-| BBIO | candidates | Healthcare（商業化階段生技） | 5 | Attruby（ATTR-CM 心肌病藥物）從輝瑞手中搶市占，營收加速但獲利仍未跟上 | Partial |
-| CAKE | candidates | Consumer Discretionary（連鎖餐飲） | 4 | 會員 App 帶動客流回溫，但股價 3 個月已漲 41.5%，估值已回到十年均值，分析師目標價已落後股價 | Partial |
-| MFG | candidates | Financials（日本銀行） | 4 | 日銀升息循環帶動淨利差擴大，但屬主流總經題材、估計未見持續上修 | Fails |
-| INVA | candidates | Healthcare（藥品權利金控股） | 4 | 權利金現金流轉投入自有專科藥（淋病口服新藥）管線，但股價相對 SPY 走弱與敘事方向矛盾 | Fails |
-| KB | candidates | Financials（韓國銀行） | 4 | 南韓「Value-up」公司治理改革題材，本週急漲實為晶片股重挫下的防禦性資金輪動 | Fails |
-| TRNO | candidates | Real Estate（工業型 REIT） | 3 | 沿海稀缺工業倉儲物流題材，但 P/FFO 已高於同業、分析師目標價已與股價齊平 | Fails |
+| [BNED](profiles/BNED.md) | candidates | Consumer Discretionary（校園零售） | **8** | 破產重組後轉型 inclusive-access 課程材料訂閱模式的翻身股，覆蓋分析師僅 2-4 家 | Partial |
+| [MRVI](profiles/MRVI.md) | candidates | Healthcare（生命科學工具/mRNA試劑） | **7** | 疫情後去庫存壓力解除，mRNA/核酸試劑與 CDMO 訂單回溫 | Partial |
+| [OPRT](profiles/OPRT.md) | candidates | Financials（次級消費金融） | **7** | 走出多年信用損失循環轉為 GAAP 獲利，新銀行合作夥伴打開高利率放款成長空間 | Partial |
+| [LEVI](profiles/LEVI.md) | candidates | Consumer Discretionary（服飾） | 6 | 牛仔褲品牌靠 DTC/國際市場毛利率回升，連 2 季上修財測 | Partial |
+| [PENG](profiles/PENG.md) | candidates | Technology（AI 記憶體/資料中心基礎設施） | 6 | AI 伺服器記憶體/HBM 需求推動連 2 季財測大幅上修，但股價漲幅已超前預估上修速度 | Partial |
+| [AZZ](profiles/AZZ.md) | candidates | Industrials（金屬鍍鋅/塗層） | 5 | 資料中心與電網基礎設施建設帶動鍍鋅需求，剛繳出財報超標並上修財測 | Partial |
+| [BBIO](profiles/BBIO.md) | candidates | Healthcare（商業化階段生技） | 5 | Attruby（ATTR-CM 心肌病藥物）從輝瑞手中搶市占，營收加速但獲利仍未跟上 | Partial |
+| [CAKE](profiles/CAKE.md) | candidates | Consumer Discretionary（連鎖餐飲） | 4 | 會員 App 帶動客流回溫，但股價 3 個月已漲 41.5%，估值已回到十年均值，分析師目標價已落後股價 | Partial |
+| [MFG](profiles/MFG.md) | candidates | Financials（日本銀行） | 4 | 日銀升息循環帶動淨利差擴大，但屬主流總經題材、估計未見持續上修 | Fails |
+| [INVA](profiles/INVA.md) | candidates | Healthcare（藥品權利金控股） | 4 | 權利金現金流轉投入自有專科藥（淋病口服新藥）管線，但股價相對 SPY 走弱與敘事方向矛盾 | Fails |
+| [KB](profiles/KB.md) | candidates | Financials（韓國銀行） | 4 | 南韓「Value-up」公司治理改革題材，本週急漲實為晶片股重挫下的防禦性資金輪動 | Fails |
+| [TRNO](profiles/TRNO.md) | candidates | Real Estate（工業型 REIT） | 3 | 沿海稀缺工業倉儲物流題材，但 P/FFO 已高於同業、分析師目標價已與股價齊平 | Fails |
 
 *streak 清單本期因額度已滿未評估，僅供留存：非 ETF/CEF 且 repeat=True 或同產業群聚者共約 20+ 檔，其中生技股（Biotechnology）達 9 檔（KYMR, ACRS, CTNM, DYN, KURA, IMMX, JANX, IRON, EYPT）已符合「群聚 ≥3 才評估」門檻，但因額度用盡未展開全套六訊號評估——下週若 candidates 少於 12 檔，建議優先補入此群聚訊號。*
 
 ## 2. 高分標的（≥7）
 
 ### BNED — Barnes & Noble Education（發酵分數 8）
+
+> 📄 [公司簡介:BNED 在做什麼、TAM、競爭者、營收結構](profiles/BNED.md)
 
 **六訊號逐項證據**
 - **S1 估計上修軌跡（3/3）**：Northland Securities 於 2026/6/26 將 FY2026 EPS 預估從 $0.23 大幅上修至 $0.46；Zacks 於 6/11 調升評等；stockanalysis.com 顯示 FY2026→FY2027 EPS 共識 $0.67→$1.01（+50.75%）。（來源：dailypolitical.com、marketbeat.com、stockanalysis.com/stocks/BNED/forecast/）
@@ -53,6 +55,8 @@ https://stockanalysis.com/stocks/BNED/forecast/ ・ https://www.marketbeat.com/s
 
 ### MRVI — Maravai LifeSciences（發酵分數 7）
 
+> 📄 [公司簡介:MRVI 在做什麼、TAM、競爭者、營收結構](profiles/MRVI.md)
+
 **六訊號逐項證據**
 - **S1 估計上修軌跡（3/3）**：Zacks 共識 EPS 過去 3 個月上修 23.5%，近 30 天當季預估再上修 30%；stockanalysis.com 顯示個別分析師目標價自 $4→$6（2026/5）。
 - **S2 半信半疑落差（1/3）**：GAAP 仍虧損（TTM 淨利率 -51%），PEG/forward P/E 不適用；以 P/S(ttm) 3.44x 衡量並非明顯便宜，落差有限。
@@ -78,6 +82,8 @@ https://stockanalysis.com/stocks/mrvi/forecast/ ・ https://www.fool.com/earning
 ---
 
 ### OPRT — Oportun Financial（發酵分數 7）
+
+> 📄 [公司簡介:OPRT 在做什麼、TAM、競爭者、營收結構](profiles/OPRT.md)
 
 **六訊號逐項證據**
 - **S1 估計上修軌跡（1/3）**：90 天內多數時間偏負向（JPMorgan 4/9 下修目標價 $6→$5），僅 7/9-7/10 因新的 Column N.A. 放款合作夥伴消息，B.Riley 上修目標價 $11→$13（Buy）；非持續性上修。
@@ -121,3 +127,6 @@ https://stockanalysis.com/stocks/OPRT/forecast/ ・ https://investor.oportun.com
 
 ---
 本報告為研究彙整，非投資建議，不構成買賣任何證券之要約或建議。所有數字如有時效性差異，請以來源網站當下顯示為準。
+
+---
+*本期已為全部 12 檔建立公司簡介頁(reports/profiles/),總覽表 ticker 可直接點擊。*
