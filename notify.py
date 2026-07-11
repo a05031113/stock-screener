@@ -59,8 +59,12 @@ def format_candidate(row: pd.Series) -> str:
     gm = row.get("gross_margins")
     gm_str = f"{gm:.0%}" if pd.notna(gm) else "N/A"
 
+    sector = row.get("sector", "")
+    sector_str = f" | {sector}" if sector else ""
+    repeat_str = " [連續上榜]" if row.get("repeat") else ""
+
     return (
-        f"<b>${row['ticker']}</b> | 總分 {row['total_score']}\n"
+        f"<b>${row['ticker']}</b> | 總分 {row['total_score']}{sector_str}{repeat_str}\n"
         f"  ${row['price']} | 相對量 {row['rel_vol']}x\n"
         f"  技術 {row['tech_score']}/12 | 基本面 {row['fund_score']}/7 | VCP +{row['vol_bonus']}\n"
         f"  1W {row['return_1w']} | 1M {row['return_1m']} | 3M {row['return_3m']}\n"

@@ -64,11 +64,12 @@ def compute_indicators(df: pd.DataFrame, spy_close: pd.Series | None = None) -> 
     ma150 = df["MA150"]
     df["MA150_Slope"] = (ma150 - ma150.shift(20)) / ma150.shift(20)
 
-    # MA50 穿越 MA150 的天數（找最近一次 golden cross）
+    # MA50 穿越 MA150 的交易日數（找最近一次 golden cross）
+    # 用整數位置差 = 交易日數，避免日曆日灌水（週末/假日）
     cross = (df["MA50"] > df["MA150"]) & (df["MA50"].shift(1) <= df["MA150"].shift(1))
     if cross.any():
-        last_cross_idx = cross[cross].index[-1]
-        df["MA50_Cross_Days"] = (df.index[-1] - last_cross_idx).days
+        last_cross_pos = int(np.flatnonzero(cross.values)[-1])
+        df["MA50_Cross_Days"] = len(df) - 1 - last_cross_pos
     else:
         df["MA50_Cross_Days"] = 999
 
@@ -184,9 +185,13 @@ def fetch_fundamentals(ticker_obj: yf.Ticker) -> dict:
 
     try:
         raw = ticker_obj.info
-        info["gross_margins"]   = raw.get("grossMargins")
+        # 金融股等無毛利率概念的產業，yfinance 會回 0 而非缺值；
+        # 真實 0% 毛利的公司實務上不存在，一律視為缺資料（None）
+        gm = raw.get("grossMargins")
+        info["gross_margins"]   = gm if gm else None
         info["revenue_growth"]  = raw.get("revenueGrowth")
         info["earnings_growth"] = raw.get("earningsGrowth")
+        info["inst_pct"]        = raw.get("heldPercentInstitutions")
     except Exception:
         pass
 
@@ -199,14 +204,6 @@ def fetch_fundamentals(ticker_obj: yf.Ticker) -> dict:
                 if not recent.empty:
                     info["eps_actual"]   = float(recent["Reported EPS"].iloc[0])
                     info["eps_estimate"] = float(recent["EPS Estimate"].iloc[0])
-    except Exception:
-        pass
-
-    # 機構持股數量
-    try:
-        holders = ticker_obj.institutional_holders
-        if holders is not None and not holders.empty:
-            info["inst_holder_count"] = len(holders)
     except Exception:
         pass
 
@@ -247,7 +244,10 @@ def score_fundamental(info: dict) -> tuple[int, list[str]]:
     checks["eps_positive"] = eps_actual is not None and eps_actual > 0
 
     # C. 機構動向
-    checks["inst_holders"] = info.get("inst_holder_count", 0) >= 5
+    # 舊版用 institutional_holders 表的列數 >=5，但該表本來就只回前 10 大，
+    # 幾乎所有上市股都通過（送分題）。改用機構持股比例 >30% 才有鑑別度。
+    inst_pct = info.get("inst_pct")
+    checks["inst_holders"] = inst_pct is not None and inst_pct > 0.30
 
     score  = sum(checks.values())
     labels = [k for k, v in checks.items() if v]
@@ -256,7 +256,8 @@ def score_fundamental(info: dict) -> tuple[int, list[str]]:
 
 # ── 主流程 ────────────────────────────────────────────────────────────────
 
-def screen_ticker(ticker: str, spy_close: pd.Series | None = None) -> dict | None:
+def screen_ticker(ticker: str, spy_close: pd.Series | None = None,
+                  meta: dict | None = None) -> dict | None:
     try:
         ticker_obj = yf.Ticker(ticker)
         df = ticker_obj.history(period="2y")
@@ -287,8 +288,12 @@ def screen_ticker(ticker: str, spy_close: pd.Series | None = None) -> dict | Non
 
         total_score = tech_score + vol_bonus + fund_score
 
+        meta = meta or {}
         return {
             "ticker":         ticker,
+            "sector":         meta.get("sector", ""),
+            "industry":       meta.get("industry", ""),
+            "cap_label":      _market_cap_label(meta.get("market_cap", 0) or 0),
             "price":          round(price, 2),
             "tech_score":     tech_score,
             "fund_score":     fund_score,
@@ -314,7 +319,8 @@ def screen_ticker(ticker: str, spy_close: pd.Series | None = None) -> dict | Non
         return None
 
 
-def run_screener(tickers: list[str], batch_delay: float = 0.3) -> pd.DataFrame:
+def run_screener(tickers: list[str], metadata: dict | None = None,
+                 batch_delay: float = 0.3) -> pd.DataFrame:
     # 先下載 SPY 資料用於 Relative Strength 計算
     logger.info("Downloading SPY benchmark data...")
     spy_close = yf.Ticker("SPY").history(period="2y")["Close"]
@@ -324,7 +330,8 @@ def run_screener(tickers: list[str], batch_delay: float = 0.3) -> pd.DataFrame:
     logger.info(f"Screening {total} tickers...")
 
     for i, ticker in enumerate(tickers, 1):
-        result = screen_ticker(ticker, spy_close)
+        meta = metadata.get(ticker) if metadata else None
+        result = screen_ticker(ticker, spy_close, meta)
         if result:
             candidates.append(result)
             logger.info(
@@ -341,8 +348,27 @@ def run_screener(tickers: list[str], batch_delay: float = 0.3) -> pd.DataFrame:
     df = pd.DataFrame(candidates)
     if not df.empty:
         df = df.sort_values("total_score", ascending=False)
+        # 比對上期結果，標記連續上榜（與 streak 清單同一套慣例）
+        prev_tickers = _load_prev_candidate_tickers()
+        df["repeat"] = df["ticker"].isin(prev_tickers)
+        logger.info(f"Repeat from last week: {df['repeat'].sum()}/{len(df)}")
 
     return df
+
+
+def _load_prev_candidate_tickers() -> set[str]:
+    """讀取上一期的 candidates CSV，回傳 ticker set"""
+    csv_files = sorted(OUTPUT_DIR.glob("candidates_*.csv"), reverse=True)
+    if not csv_files:
+        return set()
+    try:
+        prev = pd.read_csv(csv_files[0])
+        tickers = set(prev["ticker"].tolist())
+        logger.info(f"Loaded previous candidates: {csv_files[0].name} ({len(tickers)} tickers)")
+        return tickers
+    except Exception as e:
+        logger.warning(f"Failed to load previous candidates: {e}")
+        return set()
 
 
 # ── 週 K 連漲篩選 ─────────────────────────────────────────────────────────
@@ -530,13 +556,13 @@ def save_results(df: pd.DataFrame) -> Path:
 
 def main() -> pd.DataFrame:
     from universe import get_prefiltered_universe
-    tickers = get_prefiltered_universe()
+    tickers, metadata = get_prefiltered_universe()
 
     if not tickers:
         logger.error("No tickers from Finviz pre-filter")
         return pd.DataFrame()
 
-    df = run_screener(tickers)
+    df = run_screener(tickers, metadata)
 
     if df.empty:
         logger.warning("No candidates found this week.")
