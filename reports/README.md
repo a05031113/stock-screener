@@ -5,4 +5,5 @@
 
 | 日期 | 週報 | 評估檔數 | 高分標的(≥7) |
 |---|---|---|---|
+| 2026-07-17 | [fermentation_20260717](fermentation_20260717.md) | 0（screener 逾時未產出資料） | 無 |
 | 2026-07-11 | [fermentation_20260711](fermentation_20260711.md) | 12 | BNED(8)、MRVI(7)、OPRT(7) |
