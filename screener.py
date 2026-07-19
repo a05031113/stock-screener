@@ -15,10 +15,10 @@ Early Momentum Stock Screener v2
 """
 
 import yfinance as yf
-import yfinance.shared  # noqa: F401 — 讓 yf.shared._ERRORS（逐檔失敗原因）可用
 import pandas as pd
 import numpy as np
 import logging
+import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -413,42 +413,31 @@ def _download_daily_closes(
     period: str = "8mo",
     chunk_size: int = 200,
     threads: int = 8,
-    max_retries: int = 1,
+    use_batch: bool | None = None,
 ) -> dict[str, pd.Series]:
-    """批次下載日 K 收盤價，回傳 {ticker: close series}。
+    """下載日 K 收盤價，回傳 {ticker: close series}；週 K / 月 K 由呼叫端本地 resample。
 
-    改用 yf.download 多執行緒批次抓，取代逐檔 Ticker.history 序列請求
-    （後者在 Yahoo 限流時會讓 2000+ 檔掃描超過 GitHub Actions timeout）。
-    週 K / 月 K 由日 K 本地 resample，不另外打 API。
+    兩種模式（實跑對帳結論，2026-07-19）：
+    - 本機/住宅 IP：yf.download 多執行緒批次，2000+ 檔幾分鐘搞定。
+    - GitHub Actions runner：Yahoo 對機房 IP 擋併發 burst——批次一開下去
+      整個 IP 的限流額度就被打爆，之後連序列請求都全數 429（實測 2645 檔
+      批次只成功 33，隨後的序列 fallback 也全滅）。所以 Actions 上完全
+      不碰批次，直接走「已證明可行」的逐檔序列（每檔一次請求），連續
+      429 時插入冷卻等待。
 
-    Yahoo 對機房 IP（GitHub Actions runner）會大面積擋併發請求，
-    所以失敗的 ticker 帶退避重試，並記錄失敗原因樣本方便診斷；
-    最終覆蓋率 < 50% 時直接 raise 讓 job 紅掉，不產出殘缺結果。
+    最終覆蓋率 < 50% 時 raise 讓 job 紅掉，不產出殘缺結果。
     """
+    if use_batch is None:
+        use_batch = os.environ.get("GITHUB_ACTIONS") != "true"
+
     closes: dict[str, pd.Series] = {}
     total = len(tickers)
     pending = list(tickers)
 
-    for attempt in range(max_retries + 1):
-        if not pending:
-            break
-        if attempt:
-            backoff = 30 * attempt
-            logger.warning(
-                {
-                    "message": "Retrying failed downloads after backoff",
-                    "attempt": attempt,
-                    "pending": len(pending),
-                    "backoff_sec": backoff,
-                }
-            )
-            time.sleep(backoff)
-
+    if use_batch:
         failed: list[str] = []
-        error_sample: dict[str, str] = {}
         for start in range(0, len(pending), chunk_size):
             chunk = pending[start : start + chunk_size]
-            yf.shared._ERRORS.clear()
             try:
                 data = yf.download(
                     chunk,
@@ -462,7 +451,7 @@ def _download_daily_closes(
             except Exception as e:
                 logger.warning(
                     {
-                        "message": "Batch download raised, will retry chunk",
+                        "message": "Batch chunk failed, will fetch serially",
                         "chunk_start": start,
                         "size": len(chunk),
                         "error": str(e),
@@ -486,37 +475,14 @@ def _download_daily_closes(
                     closes[ticker] = series
                 else:
                     failed.append(ticker)
-            error_sample.update(
-                {t: str(e) for t, e in list(yf.shared._ERRORS.items())[:3]}
-            )
-            time.sleep(1)  # chunk 間喘息，避免連續 burst 觸發限流
-
-        logger.info(
-            f"[{len(closes)}/{total}] daily closes downloaded"
-            f" (attempt {attempt + 1}, failed {len(failed)})"
-        )
-        if error_sample:
-            logger.warning(
-                {
-                    "message": "Download failure reasons (sample)",
-                    "sample": error_sample,
-                    "failed_count": len(failed),
-                }
-            )
+        logger.info(f"[{len(closes)}/{total}] daily closes via batch download")
         pending = failed
 
-    # 序列 fallback：實測 Actions runner 上 Yahoo 會針對性擋 yf.download
-    # 的併發 burst（2645 檔只成功 33），但逐檔 Ticker.history 序列請求
-    # 同一 run 全程正常——批次失敗的 ticker 改走序列補完
     if pending:
-        logger.warning(
-            {
-                "message": "Falling back to serial per-ticker download",
-                "pending": len(pending),
-            }
-        )
-        error_sample = {}
+        logger.info(f"Serial downloading {len(pending)} tickers...")
+        error_sample: dict[str, str] = {}
         still_failed: list[str] = []
+        rate_limited_streak = 0
         for i, ticker in enumerate(pending, 1):
             try:
                 series = yf.Ticker(ticker).history(period=period)["Close"].dropna()
@@ -524,21 +490,36 @@ def _download_daily_closes(
                     closes[ticker] = series
                 else:
                     still_failed.append(ticker)
+                rate_limited_streak = 0
             except Exception as e:
                 still_failed.append(ticker)
+                msg = str(e)
                 if len(error_sample) < 3:
-                    error_sample[ticker] = str(e)
+                    error_sample[ticker] = msg
+                if "Rate limited" in msg or "Too Many Requests" in msg:
+                    rate_limited_streak += 1
+                    # 連續大量 429 = 限流額度耗盡，硬打只會延長封鎖——冷卻再繼續
+                    if rate_limited_streak >= 30:
+                        logger.warning(
+                            {
+                                "message": "Sustained rate limiting, cooling down",
+                                "at_ticker": i,
+                                "cooldown_sec": 120,
+                            }
+                        )
+                        time.sleep(120)
+                        rate_limited_streak = 0
             if i % 200 == 0:
-                logger.info(f"[serial {i}/{len(pending)}] fallback downloading...")
-            time.sleep(0.05)
+                logger.info(f"[serial {i}/{len(pending)}] downloaded...")
+            time.sleep(0.1)
         logger.info(
-            f"[{len(closes)}/{total}] daily closes after serial fallback"
-            f" (still failed {len(still_failed)})"
+            f"[{len(closes)}/{total}] daily closes after serial pass"
+            f" (failed {len(still_failed)})"
         )
         if error_sample:
             logger.warning(
                 {
-                    "message": "Serial fallback failure reasons (sample)",
+                    "message": "Serial download failure reasons (sample)",
                     "sample": error_sample,
                     "failed_count": len(still_failed),
                 }
@@ -546,9 +527,8 @@ def _download_daily_closes(
 
     if len(closes) < total * 0.5:
         raise RuntimeError(
-            f"Batch download coverage {len(closes)}/{total} below 50% "
-            f"after {max_retries + 1} attempts — aborting instead of "
-            "producing incomplete streak results"
+            f"Daily close download coverage {len(closes)}/{total} below 50% "
+            "— aborting instead of producing incomplete streak results"
         )
     return closes
 
