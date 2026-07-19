@@ -15,6 +15,7 @@ Early Momentum Stock Screener v2
 """
 
 import yfinance as yf
+import yfinance.shared  # noqa: F401 — 讓 yf.shared._ERRORS（逐檔失敗原因）可用
 import pandas as pd
 import numpy as np
 import logging
@@ -408,70 +409,107 @@ def _market_cap_label(mc: float) -> str:
 
 
 def _download_daily_closes(
-    tickers: list[str], period: str = "8mo", chunk_size: int = 500
+    tickers: list[str],
+    period: str = "8mo",
+    chunk_size: int = 200,
+    threads: int = 8,
+    max_retries: int = 2,
 ) -> dict[str, pd.Series]:
     """批次下載日 K 收盤價，回傳 {ticker: close series}。
 
     改用 yf.download 多執行緒批次抓，取代逐檔 Ticker.history 序列請求
     （後者在 Yahoo 限流時會讓 2000+ 檔掃描超過 GitHub Actions timeout）。
     週 K / 月 K 由日 K 本地 resample，不另外打 API。
+
+    Yahoo 對機房 IP（GitHub Actions runner）會大面積擋併發請求，
+    所以失敗的 ticker 帶退避重試，並記錄失敗原因樣本方便診斷；
+    最終覆蓋率 < 50% 時直接 raise 讓 job 紅掉，不產出殘缺結果。
     """
     closes: dict[str, pd.Series] = {}
     total = len(tickers)
-    for start in range(0, total, chunk_size):
-        chunk = tickers[start : start + chunk_size]
-        try:
-            data = yf.download(
-                chunk,
-                period=period,
-                interval="1d",
-                group_by="ticker",
-                threads=True,
-                auto_adjust=True,
-                progress=False,
-            )
-        except Exception as e:
+    pending = list(tickers)
+
+    for attempt in range(max_retries + 1):
+        if not pending:
+            break
+        if attempt:
+            backoff = 30 * attempt
             logger.warning(
                 {
-                    "message": "Batch download failed, skipping chunk",
-                    "chunk_start": start,
-                    "size": len(chunk),
-                    "error": str(e),
+                    "message": "Retrying failed downloads after backoff",
+                    "attempt": attempt,
+                    "pending": len(pending),
+                    "backoff_sec": backoff,
                 }
             )
-            continue
-        if data.empty:
-            logger.warning(
-                {
-                    "message": "Batch download returned empty",
-                    "chunk_start": start,
-                    "size": len(chunk),
-                }
-            )
-            continue
-        for ticker in chunk:
+            time.sleep(backoff)
+
+        failed: list[str] = []
+        error_sample: dict[str, str] = {}
+        for start in range(0, len(pending), chunk_size):
+            chunk = pending[start : start + chunk_size]
+            yf.shared._ERRORS.clear()
             try:
-                # 多檔時是 (ticker, field) MultiIndex；單檔 chunk 是平面欄位
-                series = (
-                    data[ticker]["Close"]
-                    if isinstance(data.columns, pd.MultiIndex)
-                    else data["Close"]
+                data = yf.download(
+                    chunk,
+                    period=period,
+                    interval="1d",
+                    group_by="ticker",
+                    threads=threads,
+                    auto_adjust=True,
+                    progress=False,
                 )
-                series = series.dropna()
-                if not series.empty:
-                    closes[ticker] = series
-            except KeyError:
+            except Exception as e:
+                logger.warning(
+                    {
+                        "message": "Batch download raised, will retry chunk",
+                        "chunk_start": start,
+                        "size": len(chunk),
+                        "error": str(e),
+                    }
+                )
+                failed.extend(chunk)
                 continue
+            for ticker in chunk:
+                series = None
+                if not data.empty:
+                    try:
+                        # 多檔時是 (ticker, field) MultiIndex；單檔 chunk 是平面欄位
+                        series = (
+                            data[ticker]["Close"]
+                            if isinstance(data.columns, pd.MultiIndex)
+                            else data["Close"]
+                        ).dropna()
+                    except KeyError:
+                        series = None
+                if series is not None and not series.empty:
+                    closes[ticker] = series
+                else:
+                    failed.append(ticker)
+            error_sample.update(
+                {t: str(e) for t, e in list(yf.shared._ERRORS.items())[:3]}
+            )
+            time.sleep(1)  # chunk 間喘息，避免連續 burst 觸發限流
+
         logger.info(
-            f"[{min(start + chunk_size, total)}/{total}] daily closes downloaded..."
+            f"[{len(closes)}/{total}] daily closes downloaded"
+            f" (attempt {attempt + 1}, failed {len(failed)})"
         )
+        if error_sample:
+            logger.warning(
+                {
+                    "message": "Download failure reasons (sample)",
+                    "sample": error_sample,
+                    "failed_count": len(failed),
+                }
+            )
+        pending = failed
+
     if len(closes) < total * 0.5:
-        logger.warning(
-            {
-                "message": "Batch download coverage below 50%, results may be incomplete",
-                "downloaded": len(closes),
-                "requested": total,
-            }
+        raise RuntimeError(
+            f"Batch download coverage {len(closes)}/{total} below 50% "
+            f"after {max_retries + 1} attempts — aborting instead of "
+            "producing incomplete streak results"
         )
     return closes
 
