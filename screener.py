@@ -413,7 +413,7 @@ def _download_daily_closes(
     period: str = "8mo",
     chunk_size: int = 200,
     threads: int = 8,
-    max_retries: int = 2,
+    max_retries: int = 1,
 ) -> dict[str, pd.Series]:
     """批次下載日 K 收盤價，回傳 {ticker: close series}。
 
@@ -504,6 +504,45 @@ def _download_daily_closes(
                 }
             )
         pending = failed
+
+    # 序列 fallback：實測 Actions runner 上 Yahoo 會針對性擋 yf.download
+    # 的併發 burst（2645 檔只成功 33），但逐檔 Ticker.history 序列請求
+    # 同一 run 全程正常——批次失敗的 ticker 改走序列補完
+    if pending:
+        logger.warning(
+            {
+                "message": "Falling back to serial per-ticker download",
+                "pending": len(pending),
+            }
+        )
+        error_sample = {}
+        still_failed: list[str] = []
+        for i, ticker in enumerate(pending, 1):
+            try:
+                series = yf.Ticker(ticker).history(period=period)["Close"].dropna()
+                if not series.empty:
+                    closes[ticker] = series
+                else:
+                    still_failed.append(ticker)
+            except Exception as e:
+                still_failed.append(ticker)
+                if len(error_sample) < 3:
+                    error_sample[ticker] = str(e)
+            if i % 200 == 0:
+                logger.info(f"[serial {i}/{len(pending)}] fallback downloading...")
+            time.sleep(0.05)
+        logger.info(
+            f"[{len(closes)}/{total}] daily closes after serial fallback"
+            f" (still failed {len(still_failed)})"
+        )
+        if error_sample:
+            logger.warning(
+                {
+                    "message": "Serial fallback failure reasons (sample)",
+                    "sample": error_sample,
+                    "failed_count": len(still_failed),
+                }
+            )
 
     if len(closes) < total * 0.5:
         raise RuntimeError(
