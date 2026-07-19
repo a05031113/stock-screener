@@ -482,39 +482,58 @@ def _download_daily_closes(
         logger.info(f"Serial downloading {len(pending)} tickers...")
         error_sample: dict[str, str] = {}
         still_failed: list[str] = []
-        rate_limited_streak = 0
+        fail_streak = 0
+        empty_count = 0
+        cooldowns_left = 4
         for i, ticker in enumerate(pending, 1):
             try:
                 series = yf.Ticker(ticker).history(period=period)["Close"].dropna()
                 if not series.empty:
                     closes[ticker] = series
+                    fail_streak = 0
                 else:
+                    # 被限流時 history() 常「靜默回空」而非拋錯
+                    # （run 29672325389：2565 檔全空、零 exception），
+                    # 所以連續失敗計數必須含空結果
                     still_failed.append(ticker)
-                rate_limited_streak = 0
+                    empty_count += 1
+                    fail_streak += 1
             except Exception as e:
                 still_failed.append(ticker)
-                msg = str(e)
+                fail_streak += 1
                 if len(error_sample) < 3:
-                    error_sample[ticker] = msg
-                if "Rate limited" in msg or "Too Many Requests" in msg:
-                    rate_limited_streak += 1
-                    # 連續大量 429 = 限流額度耗盡，硬打只會延長封鎖——冷卻再繼續
-                    if rate_limited_streak >= 30:
-                        logger.warning(
-                            {
-                                "message": "Sustained rate limiting, cooling down",
-                                "at_ticker": i,
-                                "cooldown_sec": 120,
-                            }
-                        )
-                        time.sleep(120)
-                        rate_limited_streak = 0
+                    error_sample[ticker] = str(e)
+            if fail_streak >= 30:
+                if cooldowns_left > 0:
+                    cooldowns_left -= 1
+                    logger.warning(
+                        {
+                            "message": "Sustained failures, cooling down",
+                            "at_ticker": i,
+                            "cooldown_sec": 120,
+                            "cooldowns_left": cooldowns_left,
+                        }
+                    )
+                    time.sleep(120)
+                    fail_streak = 0
+                else:
+                    # 冷卻額度用完仍連續全滅 = IP 額度已死，
+                    # 提早斷、走覆蓋率檢查 fail loud，別再磨 30 分鐘
+                    logger.error(
+                        {
+                            "message": "Cooldowns exhausted and still failing, aborting early",
+                            "at_ticker": i,
+                            "downloaded": len(closes),
+                        }
+                    )
+                    still_failed.extend(pending[i:])
+                    break
             if i % 200 == 0:
                 logger.info(f"[serial {i}/{len(pending)}] downloaded...")
             time.sleep(0.1)
         logger.info(
             f"[{len(closes)}/{total}] daily closes after serial pass"
-            f" (failed {len(still_failed)})"
+            f" (failed {len(still_failed)}, empty {empty_count})"
         )
         if error_sample:
             logger.warning(
