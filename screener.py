@@ -382,6 +382,9 @@ def run_screener(
     # 先下載 SPY 資料用於 Relative Strength 計算
     logger.info("Downloading SPY benchmark data...")
     spy_close = yf.Ticker("SPY").history(period="2y")["Close"]
+    if spy_close.empty:
+        # 限流時 history() 會靜默回空而非拋錯；基準線缺失要留下大聲的痕跡
+        logger.warning("SPY benchmark empty (rate-limited?) — RS scores unreliable")
 
     candidates = []
     total = len(tickers)
@@ -638,11 +641,16 @@ def _spy_weekly_gain(weeks: int = 3) -> float:
     """取 SPY 近 N 週的總漲幅，作為相對強度門檻"""
     df = yf.Ticker("SPY").history(period="2mo", interval="1wk")
     if df.empty or len(df) < weeks + 1:
+        # 限流時 history() 靜默回空；基準 0.0 會讓過濾過度包含，警告留痕
+        logger.warning("SPY weekly benchmark empty — streak filter falls back to 0.0")
         return 0.0
     last_date = df.index[-1]
     if last_date.weekday() < 4:
         df = df.iloc[:-1]
     if len(df) < weeks + 1:
+        logger.warning(
+            "SPY weekly benchmark too short — streak filter falls back to 0.0"
+        )
         return 0.0
     closes = df["Close"].tail(weeks + 1).values
     return closes[-1] / closes[0] - 1
