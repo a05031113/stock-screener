@@ -34,6 +34,42 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 TECH_THRESHOLD = 8  # /12
 FUND_THRESHOLD = 4  # /7
 
+# 0 檔結果也要寫出帶 header 的空 CSV：讓下游發酵 routine 能區分
+# 「跑了但 0 檔」與「screener 根本沒跑成功」，也讓補跑排程判斷本週已完成
+CANDIDATE_COLUMNS = [
+    "ticker",
+    "price",
+    "tech_score",
+    "fund_score",
+    "vol_bonus",
+    "total_score",
+    "rel_vol",
+    "return_1w",
+    "return_1m",
+    "return_3m",
+    "pct_from_high",
+    "rs_vs_spy",
+    "revenue_growth",
+    "gross_margins",
+    "tech_signals",
+    "fund_signals",
+]
+STREAK_COLUMNS = [
+    "ticker",
+    "price",
+    "total_gain",
+    "w1",
+    "w2",
+    "w3",
+    "m1",
+    "m2",
+    "sector",
+    "industry",
+    "cap_label",
+    "is_etf",
+    "repeat",
+]
+
 
 # ── ATR 計算 ──────────────────────────────────────────────────────────────
 
@@ -423,31 +459,41 @@ def _download_daily_closes(
 
     Yahoo 對機房 IP（GitHub Actions runner）會大面積擋併發請求，
     所以失敗的 ticker 帶退避重試，並記錄失敗原因樣本方便診斷；
-    最終覆蓋率 < 50% 時直接 raise 讓 job 紅掉，不產出殘缺結果。
+    首輪覆蓋率 <10% 視為 IP 級整批限流，切降級模式（小批次＋單執行緒＋
+    長退避＋多一輪重試）；最終覆蓋率 < 50% 時直接 raise 讓 job 紅掉，
+    不產出殘缺結果（持續性封鎖交給週六補跑排程換時段重試）。
     """
     closes: dict[str, pd.Series] = {}
     total = len(tickers)
     pending = list(tickers)
 
-    for attempt in range(max_retries + 1):
-        if not pending:
-            break
+    attempt = 0
+    max_attempts = max_retries + 1
+    while pending and attempt < max_attempts:
+        # 首輪覆蓋率極低（<10%）代表 Yahoo 對 runner IP 整批限流，而非個別檔失敗：
+        # 常規短退避撞不開，改小批次＋單執行緒＋長退避的降級模式
+        degraded = attempt > 0 and len(closes) < total * 0.1
+        if degraded:
+            max_attempts = max_retries + 2  # 降級時多給一輪長退避重試
+        cur_chunk = 50 if degraded else chunk_size
+        cur_threads = 1 if degraded else threads
         if attempt:
-            backoff = 30 * attempt
+            backoff = 120 * attempt if degraded else 30 * attempt
             logger.warning(
                 {
                     "message": "Retrying failed downloads after backoff",
                     "attempt": attempt,
                     "pending": len(pending),
                     "backoff_sec": backoff,
+                    "degraded_mode": degraded,
                 }
             )
             time.sleep(backoff)
 
         failed: list[str] = []
         error_sample: dict[str, str] = {}
-        for start in range(0, len(pending), chunk_size):
-            chunk = pending[start : start + chunk_size]
+        for start in range(0, len(pending), cur_chunk):
+            chunk = pending[start : start + cur_chunk]
             yf.shared._ERRORS.clear()
             try:
                 data = yf.download(
@@ -455,7 +501,7 @@ def _download_daily_closes(
                     period=period,
                     interval="1d",
                     group_by="ticker",
-                    threads=threads,
+                    threads=cur_threads,
                     auto_adjust=True,
                     progress=False,
                 )
@@ -504,11 +550,12 @@ def _download_daily_closes(
                 }
             )
         pending = failed
+        attempt += 1
 
     if len(closes) < total * 0.5:
         raise RuntimeError(
             f"Batch download coverage {len(closes)}/{total} below 50% "
-            f"after {max_retries + 1} attempts — aborting instead of "
+            f"after {attempt} attempts — aborting instead of "
             "producing incomplete streak results"
         )
     return closes
@@ -607,6 +654,11 @@ def run_weekly_streak_screener(
     weeks: int = 3,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """對 tickers 跑週 K 連漲篩選，只保留漲幅 > SPY 的，回傳 (個股 df, ETF df)"""
+    if not tickers:
+        logger.warning("Weekly streak: empty ticker universe from Finviz")
+        _save_streak_results(pd.DataFrame(columns=STREAK_COLUMNS))
+        return pd.DataFrame(), pd.DataFrame()
+
     # 先取 SPY 基準
     spy_gain = _spy_weekly_gain(weeks)
     logger.info(f"SPY {weeks}-week gain: {spy_gain:.1%}")
@@ -625,6 +677,7 @@ def run_weekly_streak_screener(
     df = pd.DataFrame(results)
     if df.empty:
         logger.info(f"Weekly streak: 0 tickers with {weeks} consecutive up weeks")
+        _save_streak_results(pd.DataFrame(columns=STREAK_COLUMNS))
         return pd.DataFrame(), pd.DataFrame()
 
     # 過濾：三週總漲幅必須 > SPY 且 > 2%
@@ -635,6 +688,7 @@ def run_weekly_streak_screener(
     logger.info(f"Filters: {before} → {len(df)} (beat SPY {spy_gain:.1%}, >2%)")
 
     if df.empty:
+        _save_streak_results(pd.DataFrame(columns=STREAK_COLUMNS))
         return pd.DataFrame(), pd.DataFrame()
 
     df = df.sort_values("_sort", ascending=False).drop(columns=["_sort"])
@@ -707,7 +761,9 @@ def main() -> pd.DataFrame:
     df = run_screener(tickers, metadata)
 
     if df.empty:
+        # 0 檔是有效結果：寫出帶 header 的空 CSV，讓下游與補跑排程知道本週已跑完
         logger.warning("No candidates found this week.")
+        save_results(pd.DataFrame(columns=CANDIDATE_COLUMNS))
         return df
 
     save_results(df)

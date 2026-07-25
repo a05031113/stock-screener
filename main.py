@@ -19,9 +19,7 @@ if __name__ == "__main__":
     # 1. 原有的技術+基本面計分
     run_screener()
 
-    # 2. 週 K 連三漲（個股 + ETF 分開存）
+    # 2. 週 K 連三漲（個股 + ETF 分開存）；空 universe 由 screener 內部
+    #    處理（寫出空 CSV，讓補跑排程知道本週已完成）
     streak_tickers, metadata = get_weekly_up_universe()
-    if streak_tickers:
-        run_weekly_streak_screener(streak_tickers, metadata)
-    else:
-        logging.getLogger(__name__).warning("No weekly-up tickers from Finviz")
+    run_weekly_streak_screener(streak_tickers, metadata)
