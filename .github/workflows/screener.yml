@@ -4,6 +4,9 @@ on:
   schedule:
     # 美股週五收盤後（美東 16:00 = UTC 21:00 = 台灣週六凌晨 05:00）
     - cron: '0 21 * * 5'
+    # 週六 09:00 UTC 補跑：若主跑撞上 Yahoo 對 CI IP 的時段性限流而失敗，
+    # 換 12 小時後的時段重試；主跑成功時由 freshness 檢查直接跳過
+    - cron: '0 9 * * 6'
   workflow_dispatch:  # 允許手動觸發
 
 permissions:
@@ -18,19 +21,43 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # candidates 與 streak 兩份同日 CSV 都在（含 0 檔的空 CSV）且 ≤3 天
+      # 才算本週已完成；只提交到一半的部分結果會讓補跑重跑整份
+      - name: Check freshness of existing results
+        id: fresh
+        run: |
+          skip=false
+          latest=$(ls output/candidates_*.csv 2>/dev/null | sort | tail -1)
+          if [ -n "$latest" ]; then
+            file_date=$(basename "$latest" .csv | cut -d_ -f2)
+            age_days=$(( ( $(date +%s) - $(date -d "$file_date" +%s) ) / 86400 ))
+            if [ "$age_days" -le 3 ] && [ -f "output/streak_${file_date}.csv" ]; then
+              skip=true
+              echo "Results for $file_date already complete (${age_days}d old), skipping run."
+            fi
+          fi
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
+
       - name: Setup Python
+        if: steps.fresh.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
           cache: 'pip'
 
       - name: Install dependencies
+        if: steps.fresh.outputs.skip != 'true'
         run: pip install -r requirements.txt
 
       - name: Run screener
+        if: steps.fresh.outputs.skip != 'true'
         run: python main.py
 
+      # always()：screener 後段（streak scan）失敗時，前段已寫出的
+      # candidates CSV 仍要提交，避免有效結果被下游模組失敗吞掉；
+      # job 本身仍以紅色收場，email 告警不受影響
       - name: Commit results
+        if: always() && steps.fresh.outputs.skip != 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
