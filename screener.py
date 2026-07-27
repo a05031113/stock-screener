@@ -450,21 +450,22 @@ def _market_cap_label(mc: float) -> str:
 def _download_daily_closes(
     tickers: list[str],
     period: str = "8mo",
-    chunk_size: int = 200,
-    threads: int = 8,
+    chunk_size: int = 40,
+    threads: int = 2,
     max_retries: int = 2,
 ) -> dict[str, pd.Series]:
     """批次下載日 K 收盤價，回傳 {ticker: close series}。
 
-    改用 yf.download 多執行緒批次抓，取代逐檔 Ticker.history 序列請求
+    改用 yf.download 批次抓，取代逐檔 Ticker.history 序列請求
     （後者在 Yahoo 限流時會讓 2000+ 檔掃描超過 GitHub Actions timeout）。
     週 K / 月 K 由日 K 本地 resample，不另外打 API。
 
-    Yahoo 對機房 IP（GitHub Actions runner）會大面積擋併發請求，
-    所以失敗的 ticker 帶退避重試，並記錄失敗原因樣本方便診斷；
-    首輪覆蓋率 <10% 視為 IP 級整批限流，切降級模式（小批次＋單執行緒＋
-    長退避＋多一輪重試）；最終覆蓋率 < 50% 時直接 raise 讓 job 紅掉，
-    不產出殘缺結果（持續性封鎖交給週六補跑排程換時段重試）。
+    2026-07 實測：Yahoo 擋的是大批次 burst 行為本身（與 IP 類型無關），
+    且 burst 會把該 IP 的額度預先燒毀、恢復以「天」計。因此：
+    (1) 從第一個請求就用小 chunk 慢節奏，不是 burst 失敗後才降級；
+    (2) 連續 3 個 chunk 整批落空＝已被限流，立刻中止本輪保住剩餘額度，
+        進退避重試，而不是把整份清單的請求打完；
+    (3) 最終覆蓋率 < 50% 時直接 raise 讓 job 紅掉，不產出殘缺結果。
     """
     closes: dict[str, pd.Series] = {}
     total = len(tickers)
@@ -473,12 +474,12 @@ def _download_daily_closes(
     attempt = 0
     max_attempts = max_retries + 1
     while pending and attempt < max_attempts:
-        # 首輪覆蓋率極低（<10%）代表 Yahoo 對 runner IP 整批限流，而非個別檔失敗：
-        # 常規短退避撞不開，改小批次＋單執行緒＋長退避的降級模式
+        # 前輪覆蓋率極低（<10%）代表整批限流而非個別檔失敗：再縮 chunk、
+        # 關併發、退避拉長，並多給一輪重試
         degraded = attempt > 0 and len(closes) < total * 0.1
         if degraded:
             max_attempts = max_retries + 2  # 降級時多給一輪長退避重試
-        cur_chunk = 50 if degraded else chunk_size
+        cur_chunk = 30 if degraded else chunk_size
         cur_threads = 1 if degraded else threads
         if attempt:
             backoff = 120 * attempt if degraded else 30 * attempt
@@ -495,9 +496,11 @@ def _download_daily_closes(
 
         failed: list[str] = []
         error_sample: dict[str, str] = {}
+        empty_streak = 0  # 連續整 chunk 落空數：限流的指紋（個別壞檔不會整批空）
         for start in range(0, len(pending), cur_chunk):
             chunk = pending[start : start + cur_chunk]
             yf.shared._ERRORS.clear()
+            got = 0
             try:
                 data = yf.download(
                     chunk,
@@ -518,27 +521,41 @@ def _download_daily_closes(
                     }
                 )
                 failed.extend(chunk)
-                continue
-            for ticker in chunk:
-                series = None
-                if not data.empty:
-                    try:
-                        # 多檔時是 (ticker, field) MultiIndex；單檔 chunk 是平面欄位
-                        series = (
-                            data[ticker]["Close"]
-                            if isinstance(data.columns, pd.MultiIndex)
-                            else data["Close"]
-                        ).dropna()
-                    except KeyError:
-                        series = None
-                if series is not None and not series.empty:
-                    closes[ticker] = series
-                else:
-                    failed.append(ticker)
-            error_sample.update(
-                {t: str(e) for t, e in list(yf.shared._ERRORS.items())[:3]}
-            )
-            time.sleep(1)  # chunk 間喘息，避免連續 burst 觸發限流
+            else:
+                for ticker in chunk:
+                    series = None
+                    if not data.empty:
+                        try:
+                            # 多檔時是 (ticker, field) MultiIndex；單檔 chunk 是平面欄位
+                            series = (
+                                data[ticker]["Close"]
+                                if isinstance(data.columns, pd.MultiIndex)
+                                else data["Close"]
+                            ).dropna()
+                        except KeyError:
+                            series = None
+                    if series is not None and not series.empty:
+                        closes[ticker] = series
+                        got += 1
+                    else:
+                        failed.append(ticker)
+                error_sample.update(
+                    {t: str(e) for t, e in list(yf.shared._ERRORS.items())[:3]}
+                )
+            empty_streak = 0 if got else empty_streak + 1
+            if empty_streak >= 3 and len(closes) < total * 0.1:
+                remaining = pending[start + cur_chunk :]
+                failed.extend(remaining)
+                logger.warning(
+                    {
+                        "message": "Consecutive empty chunks — rate-limited, "
+                        "aborting round early to preserve budget",
+                        "empty_streak": empty_streak,
+                        "aborted_remaining": len(remaining),
+                    }
+                )
+                break
+            time.sleep(3)  # chunk 間喘息：慢節奏是常態，不是降級後才有
 
         logger.info(
             f"[{len(closes)}/{total}] daily closes downloaded"
