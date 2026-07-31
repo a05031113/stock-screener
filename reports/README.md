@@ -5,6 +5,7 @@
 
 | 日期 | 週報 | 評估檔數 | 高分標的(≥7) |
 |---|---|---|---|
+| 2026-07-31 | [fermentation_20260731](fermentation_20260731.md) | 12(有效樣本10,candidates僅1檔為資料異常) | BLZE(8)、ACRS(8)、AVAH(8)、DAVE(7)、KYMR(7)、DYN(7)、IMMX(7) |
 | 2026-07-24 | [fermentation_20260724](fermentation_20260724.md) | 0（screener 批次下載失敗未產出資料） | 無 |
 | 2026-07-17 | [fermentation_20260717](fermentation_20260717.md) | 0（screener 逾時未產出資料） | 無 |
 | 2026-07-11 | [fermentation_20260711](fermentation_20260711.md) | 12 | BNED(8)、MRVI(7)、OPRT(7) |
