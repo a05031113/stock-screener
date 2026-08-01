@@ -1,0 +1,2 @@
+ticker,sector,industry,cap_label,price,tech_score,fund_score,vol_bonus,total_score,rel_vol,return_1w,return_1m,return_3m,pct_from_high,rs_vs_spy,revenue_growth,gross_margins,tech_signals,fund_signals,repeat
+EEA,Communication Services,Electronic Gaming & Multimedia,Large,11.02,8,4,1,13,0.54,1.7%,0.6%,8.1%,-1.1%,0.039,0.491,1.0,"base_tight, within_high_75, price_above_ma150, ma150_rising, ma_aligned, up_down_vol, last_vol_surge_up, rs_vs_spy, bb_compressed","revenue_yoy_10pct, revenue_positive, gross_margin_healthy, inst_holders",True
