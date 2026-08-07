@@ -22,6 +22,8 @@ BillionToOne 的收入來自檢測服務(向保險支付方/醫療系統收取�
 
 目前營收仍高度集中在 UNITY 產前檢測(近九成),Northstar 腫瘤業務雖然基期低、成長速度極快(年化營收規模約 $43M,Select 與 Response 檢測量比例約 1:2),但佔比仍偏小,尚屬「導入期」而非成熟貢獻來源。公司已將 2026 全年營收指引上修至 $445M–$465M(年增 48%–52%)。
 
+**2026 Q2 更新(2026/8/5 公布)**:營收 $109.4M,年增64%(產前檢測 $95.8M/+56%;腫瘤學 $13.7M/+176%);GAAP EPS $0.15,遠優於分析師模型($0.03,+400%),但Non-GAAP口徑($0.15)實際上略低於共識($0.19)——兩種口徑訊號矛盾,需並陳看待。**全年營收指引維持 $450–465M不變,並未隨64%的單季成長而上調**,管理層在法說會解釋為理賠款項對接、新業代爬升期、系統整合等因素導致刻意保守。財報後股價單日重挫約28–39%(不同時點統計數字不一),新產品Unity Fetal Risk Screen擴充版(130基因)預計2026/8/17上市,Northstar Origin(腫瘤源頭鑑別)預計2026/9/1上市。
+
 ## 產業與 TAM
 
 **公司自稱 TAM**:BillionToOne 在 2026 Q1 法說會簡報中宣稱其美國市場「總潛在市場規模(TAM)達 $1000 億美元」,但簡報並未拆分產前與腫瘤兩個子市場各自的金額。另有引用公司說法的第三方報導(Yahoo Finance/Baron Capital 基金評論,2026)提到更細的拆分版本:產前篩檢市場約 $20 億美元以上(公司稱已拿下約 15% 份額)、腫瘤市場約 $500 億美元以上——但這個拆分數字並非直接出自公司 10-K 或 10-Q 等 SEC 正式文件,而是投資機構評論引述,精確度與方法論不明,應保守看待。
@@ -46,16 +48,18 @@ BillionToOne 的收入來自檢測服務(向保險支付方/醫療系統收取�
 
 把可觀察到的訊號串起來,多頭故事的因果鏈大致是:QCT 平台的單分子計數技術帶來比同業更高的靈敏度 → 使 UNITY 得以用「免採父親 DNA + 單基因病篩檢」的差異化定位快速搶佔 NIPT 市場(公司自稱約 15% 份額)並持續保單通路擴張(自稱達 3 億人覆蓋)→ 產前業務放量帶動營收年增 72%–84% 並轉為 GAAP 獲利,建立起「成長 + 獲利」雙紅利的敘事基礎 → 管理層將此技術平台複製到腫瘤液態切片(Northstar),雖然基期低但年增近 5 倍、年化營收已達 $43M 量級,提供「第二成長曲線」故事 → 若這條曲線持續放大,理論上可以支撐更高的估值倍數。
 
-**但本檔案發酵分數僅 1/10(未達 ≥7 分門檻)**,主要原因是這條敘事鏈目前多處尚待更多獨立證據支撐——財報兌現並非連續乾淨的優於預期(2025 Q3 曾經 miss 共識),遠期本益比已高達三位數且跨資料源差異極大(114–170 倍不等),而且股價已經領先基本面,提前跑到分析師共識目標價之上。因此雖然商業面故事聽起來合理,但「敘事已經兌現在股價裡、且兌現速度和幅度存在不確定性」,建議用明確保守、示警的態度看待,不宜將此檔案視為積極買進訊號。
+**上期(2026-07-31)發酵分數僅 1/10**,主要原因是這條敘事鏈當時多處尚待更多獨立證據支撐——財報兌現並非連續乾淨的優於預期(2025 Q3 曾經 miss 共識),遠期本益比已高達三位數且跨資料源差異極大(114–170 倍不等),而且股價已經領先基本面,提前跑到分析師共識目標價之上。
+
+**(2026/8 更新)分數因財報後股價暴跌而逆轉至 7/10**:8/5財報後股價單日重挫近三成,使股價重新落於分析師共識目標價之下(現價約$93 vs共識目標價$118-127),原本「已超漲」的疑慮已不成立;但這是恐慌性重定價,而非市場緩慢半信半疑的溫和分歧——加上GAAP/Non-GAAP訊號矛盾、指引未隨營收大增而上調、以及與Illumina的專利訴訟仍未解決,整體判定仍是 Partial(部分符合),詳見本期(20260807)週報。
 
 ## 反方觀點
 
-1. **股價已顯著超越分析師共識目標價**:現價 $138.60 已比三個獨立來源的共識目標價均值($122–126)高出約 10%–13%,意味著市場定價已經隱含比多數分析師更樂觀的假設,上檔空間有限、下檔修正風險相對提高。
-2. **正面臨上游龍頭的專利訴訟,結果與財務衝擊未知**:Illumina 於 2026 年 5 月對 BillionToOne 提起專利侵權訴訟(德拉瓦州地院,案號 1:26-cv-00531),直接針對 UNITY 產前檢測的核心技術。若最終敗訴,可能面臨禁售令、權利金補繳或和解賠款等財務與營運衝擊;即使勝訴,訴訟過程本身也會產生法律費用與管理層心力分散的隱性成本。值得注意的是,Illumina 同時也是 BillionToOne 賴以運作的定序儀上游供應商,關係複雜度更高。
-3. **估值已隱含極高成長預期,且獲利品質仍待驗證**:遠期本益比在三位數區間(不同來源估計 114–170 倍,差異本身就顯示市場對其獲利路徑缺乏共識),而唯一可查到的 PEG 值(來自單一來源 finviz,約 0.82)方法論存疑、不足以單獨佐證「估值合理」。加上財報兌現曾經不穩定(2025 Q3 miss 共識),若未來任一季成長或獲利不如預期,高倍數估值可能面臨較大幅修正風險。
+1. **(2026/8更新)股價已由「超越目標價」轉為「跌破目標價」,但暴跌方式本身是警訊**:財報前股價一度創歷史新高$149.97,8/5財報後單日重挫約28-39%至現價約$93,已跌破分析師共識目標價($118-127)。股價在4個月內翻倍後又單日跌近三成,型態上更接近擁擠動能交易的強制平倉,而非理性的估值重估,反彈的速度與持續性存在高度不確定性。
+2. **正面臨上游龍頭的專利訴訟,結果與財務衝擊未知**:Illumina 於 2026 年 5 月對 BillionToOne 提起專利侵權訴訟(德拉瓦州地院,案號 1:26-cv-00531),直接針對 UNITY 產前檢測的核心技術,原告要求禁制令、損害賠償與權利金。截至 2026/8/7 尚無新裁決,但公司在 8/5 法說會上完全未提及此案,揭露透明度存疑——若法院核准禁制令,可能直接衝擊公司最大營收來源(產前檢測佔營收約87%)。
+3. **估值仍隱含高成長預期,獲利品質(GAAP vs Non-GAAP)訊號矛盾**:Q2財報GAAP EPS大幅優於預期,但Non-GAAP口徑實際上未達街頭模型,若市場最終認定為「未達預期」,對敘事的支撐將明顯減弱;以FY2026 EPS共識估算,現價P/E仍約107倍,對剛轉獲利的公司而言並不便宜。全年指引在64%單季成長下仍未上調,暗示管理層對下半年執行力有所保留。
 
 ---
-更新日期:2026-07-31
+更新日期:2026-08-07
 
 來源:
 - [BillionToOne posts Q1 profit on 84% revenue jump | BLLN Quarterly Report (10-Q)](https://www.stocktitan.net/sec-filings/BLLN/10-q-billion-to-one-inc-quarterly-earnings-report-d84d833e93fe.html)
@@ -73,5 +77,7 @@ BillionToOne 的收入來自檢測服務(向保險支付方/醫療系統收取�
 - [Illumina, Inc. v. BillionToOne, Inc. (1:26-cv-00531) — CourtListener docket](https://www.courtlistener.com/docket/73311191/parties/illumina-inc-v-billiontoone-inc/)
 - [With 130M US Lives Under Contract for Verifi, Illumina to Expand NIPT Abroad — GenomeWeb](https://www.genomeweb.com/sequencing/130m-us-lives-under-contract-verifi-illumina-expand-nipt-abroad-through-tech-tra)
 - [Guardant Health Q1 2026 slides: revenue soars 48% on Shield momentum — Investing.com](https://www.investing.com/news/company-news/guardant-health-q1-2026-slides-revenue-soars-48-on-shield-momentum-93CH-4670904)
+- [BillionToOne Reports Second Quarter 2026 Results — GlobeNewswire](https://www.globenewswire.com/news-release/2026/08/05/3339704/0/en/billiontoone-reports-second-quarter-2026-results-and-reiterates-2026-revenue-guidance.html)
+- [Earnings call transcript: BillionToOne tops Q2 2026 EPS forecast, shares sink — Investing.com](https://www.investing.com/news/transcripts/earnings-call-transcript-billiontoone-tops-q2-2026-eps-forecast-shares-sink-93CH-4839504)
 
 本文為研究彙整,非投資建議。

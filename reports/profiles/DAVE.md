@@ -21,6 +21,8 @@ Dave Inc.(NASDAQ: DAVE)是一家2015年成立於洛杉磯的金融科技公司,�
 
 換句話說,超過9成營收來自小額墊款這件事本身(廣義收費+訂閱),而非銀行帳戶的刷卡手續費。地區分布:兩份財報文件皆未揭露地理區域別營收(未拆分美國/海外),公司業務描述明確聚焦「everyday Americans」,對外也未提及任何海外市場,可合理判斷營收幾乎全部來自美國本土。
 
+**2026 Q2 更新(2026/8/5 公布)**:營收$170.8M,年增30%(連續第9季30%+成長);調整後稀釋EPS $4.12,年增48%,優於共識約20%;新增會員95.1萬人(年增32%),獲客成本維持$19。公司同步將FY2026調整後EPS指引由$16.25-16.75上修至**$17.00-17.50**,營收指引由$710-720M上修至$725-735M。惟信貸損失準備金季增8.3%(較去年同期+14.3%),管理層歸因於「準備金曆法效應」而非信用品質惡化,28天逾期率同步改善至2.12%支持此說法,但屬管理層單方陳述,建議後續季度持續驗證。
+
 ## 產業與 TAM
 
 Dave所處的產業一般稱為「Earned Wage Access(EWA,已賺薪資預支)」或廣義的現金墊款(cash advance app)市場。
@@ -52,9 +54,10 @@ Dave所處的產業一般稱為「Earned Wage Access(EWA,已賺薪資預支)」�
 - **監管與法律尾部風險並未真正消失,只是換了戰場**:CFPB在聯邦層級的撤案對Dave有利,但巴爾的摩市於2026年1月對Dave提起訴訟,指控其實質年化利率高達2500%,性質上直接挑戰「這不是貸款」的核心商業模式敘事;另外已有600多名用戶於2025年6月提出仲裁申訴。就算單一訴訟金額不大,若巴爾的摩案定調「EWA=貸款」,可能被其他州或城市援引,形成監管風險從聯邦下放到地方、遍地開花的情況——這與訊號(5)的樂觀解讀直接衝突,不能簡單視為已解決。
 - **估值已經反映相當樂觀的預期,安全邊際有限**:股價過去一年從$152.21暴漲至52週高點$458.25,現價約$372.69,即使PEG僅0.85-0.88看似合理,前提是22-27%的EPS成長率、EPS連續大幅beat的趨勢能持續——一旦成長略微降速或某一季不如預期,以目前的漲幅基期,股價修正的空間並不小。過去三季的「大幅beat」本身也可能已經被市場部分定價,下一季若只是「符合預期」而非「大幅超越」,反而可能被解讀為動能減弱。
 - **內部人賣股與商業模式的道德爭議是持續存在的雜訊**:CEO、CFO及董事近期依10b5-1計畫出售股票,雖然10b5-1本質上是預先排定、不代表對公司沒信心,但在股價已翻倍以上的位置出現密集內部人賣股,仍會被部分投資人解讀為管理層認為目前價位已充分反映價值。此外,84.2%營收集中在單一「墊款服務費」項目、且過去曾靠「自願小費」模式規避貸款監管定義(2025年2月才改為強制服務費),商業模式本質上仍游走在「服務費」與「利息」的定義灰色地帶,一旦司法見解轉向不利,獲利結構的衝擊會很直接。
+- **(2026/8更新)beat-and-raise財報卻遭市場「利多出盡」式重砲拋售**:8/5 Q2財報全面優於預期並上修全年財測,但股價財報後3個交易日內重挫約13-16%(不同數據源精確股價有出入,但方向與幅度一致)——顯示市場已經把「超預期成長」視為理所當然,任何被解讀為「不夠完美」的訊息(如估值過高、信貸損失準備金上升)都可能被放大懲罰,這正是「敘事已被高度定價」而非單純「市場尚未察覺」的訊號。
 
 ---
-更新日期:2026-07-31
+更新日期:2026-08-07
 
 來源:
 - Dave Inc. FY2025 10-K(SEC EDGAR):https://www.sec.gov/Archives/edgar/data/1841408/000119312526085370/dave-20251231.htm
@@ -66,5 +69,7 @@ Dave所處的產業一般稱為「Earned Wage Access(EWA,已賺薪資預支)」�
 - ValueAddVC,"Chime IPO 2026: $864M Revenue..."與相關Chime 2025營收數據:https://valueaddvc.com/blog/chime-ipo-2026-everything-we-know-about-the-neobanks-public-listing
 - Gen Digital(NASDAQ: GEN)完成收購MoneyLion公告(2025/4/17):https://newsroom.gendigital.com/2025-04-17-Gen-Completes-Acquisition-of-MoneyLion,-Accelerating-the-Companys-Leadership-in-Financial-Wellness
 - Upbound Group, Inc. Reports Fourth Quarter and Full Year 2025 Results(Brigit營收數據):https://investor.upbound.com/news-releases/news-release-details/upbound-group-inc-reports-fourth-quarter-and-full-year-2025
+- Dave Reports Second Quarter 2026 Financial Results(investors.dave.com):https://investors.dave.com/news-releases/news-release-details/dave-reports-second-quarter-2026-financial-results
+- Investing.com,「Dave Q2 2026 slides: 30% revenue growth, shares drop on valuation」:https://www.investing.com/news/company-news/dave-q2-2026-slides-30-revenue-growth-shares-drop-on-valuation-93CH-4839759
 
 本文為研究彙整,非投資建議。

@@ -16,6 +16,8 @@ Hinge Health 是一家美國數位健康公司,做的是「手機 App + 遠距�
 - **地區分布**:目前營收絕大部分來自美國。公司在 2024 年第三季才開始推「全球方案」給美國跨國企業客戶,同季擴展到加拿大,並計畫在 2025 年上半年進入包括英國、法國、德國、愛爾蘭、荷蘭在內的幾個歐洲國家。截至最新揭露,公司並未在公開文件中拆分美國 vs. 海外的營收百分比,只強調國際化仍在「早期階段」(來源:S-1/A;FY2025 10-K,SEC,2026/3/3 申報)。
 - **近期營收動能**:2026 年第一季營收 $1.82 億,年增 47%;公司在 2026 年 6 月 10 日首次法說會(Investor Day)上將全年營收指引上修至 $8.18 億–$8.24 億(年增約 40%),非 GAAP 營業利益率指引約 27%(來源:BusinessWire 法說會新聞稿,2026/6/9;Hinge Health IR 官網)。
 
+**2026 Q2 更新(2026/8/5 公布)**:營收 $212.8M,年增 53%,超財測上限 $202M;調整後EPS $0.59;GAAP轉為淨利 $43.69M;營業利益率由19%升至29%。公司**再度大幅上調全年營收指引至 $856M-$860M**(隱含中位數年增46%),並於同日宣布以現金 $105M 收購虛擬腸胃/消化道照護公司 Cylinder Health,將原本的MSK照護平台複製到新臨床領域("care automation platform"),預計2026年8月底/9月初完成交割。連續兩季優於預期並上修全年指引,成長動能較Q1進一步加速而非放緩。
+
 ## 產業與 TAM
 
 TAM(潛在市場規模)這件事上,公司自己講的數字跟第三方研究機構講的數字差很多,讀者要注意這是兩種不同的量尺,不能直接比大小:
@@ -51,9 +53,10 @@ Hinge Health 自己在最新的 2025 財年 10-K(2026/3/3 申報,SEC)風險因�
 3. **競爭強度不是在變弱,而是在變強**:直接點名的競爭對手 Sword Health 剛完成對 Kaia Health 的收購,規模擴大到約 1 億觸及人數,且在歐洲市場的布局(尤其德國)比 Hinge Health 更早卡位,對於 Hinge Health 這種仍以美國市場為主、國際化才剛起步的公司來說,競爭壓力並未隨著自己財報變好而減輕。
 4. **營收集中度風險**:2024 年前三大保險合作夥伴(HCSC、Elevance、Aetna)合計貢獻超過四成營收,且保險公司合約多可單方面提前終止或重新議價,一旦其中一家調整策略或轉向競爭對手,對營收的衝擊不容小覷。
 5. **上市時間短,可觀察的紀錄有限**:公司 2025 年 5 月才掛牌,公開財報季度數不多,管理層「連續上修財測」的紀錄雖然目前看來正向,但樣本數還太小,還不足以判斷這是穩定的長期趨勢還是新上市公司常見的「刻意保守指引、每季超標」操作模式。
+6. **(2026/8更新)內部人賣壓具持續性,非單次事件**:早期創投股東Insight Holdings Group自2026年1月至7月「多輪次」出售持股(至少6筆以上申報交易,合計逾$1億美元),顯示早期投資人系統性減碼意願,而非單一時點的財務操作;同時新收購的Cylinder Health跨足全新臨床領域(腸胃/消化道),整合與跨科別複製平台模式尚無成功先例可驗證。
 
 ---
-更新日期:2026-07-31
+更新日期:2026-08-07
 
 來源:
 - Hinge Health S-1 原始申報,SEC EDGAR:https://www.sec.gov/Archives/edgar/data/1673743/000119312525051004/d829170ds1.htm
@@ -69,5 +72,8 @@ Hinge Health 自己在最新的 2025 財年 10-K(2026/3/3 申報,SEC)風險因�
 - GlobeNewswire,〈Sword Acquires Kaia Health...〉,2026/1/28:https://www.globenewswire.com/news-release/2026/01/28/3227273/0/en/sword-acquires-kaia-health-extending-its-lead-in-ai-health-and-expanding-reach-to-100-million-people-worldwide.html
 - Investing.com,〈Hinge Health stock hits all-time high at 84.65 USD〉:https://www.investing.com/news/company-news/hinge-health-stock-hits-alltime-high-at-8465-usd-93CH-4770778
 - Yahoo Finance,〈A Hinge Health Backer Sold $38.4 Million in Stock After a 101% Run〉:https://finance.yahoo.com/markets/stocks/articles/hinge-health-backer-sold-38-185837439.html
+- Yahoo Finance,〈Hinge Health (HNGE) Q2 2026 results〉:https://finance.yahoo.com/healthcare/articles/hinge-health-inc-q2-2026-123000920.html
+- Yahoo Finance,〈Hinge Health (HNGE) agrees to acquire Cylinder Health〉:https://ca.finance.yahoo.com/news/hinge-health-hnge-agrees-acquire-171310628.html
+- Seeking Alpha,〈Hinge Health forecasts $856M-$860M 2026 revenue as it plans broader GI rollout in 2027〉:https://seekingalpha.com/news/4625627
 
 本文為研究彙整,非投資建議。

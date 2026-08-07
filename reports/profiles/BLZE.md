@@ -19,6 +19,8 @@ Backblaze 是一家美國雲端儲存公司,最早以「幫個人電腦和中小
 
 換算成完整 2025 財年(全年):B2 Cloud Storage 營收 7,990 萬美元(年增 26%),Computer Backup 營收 6,590 萬美元(年增 3%),兩者占比約 55% / 45%。兩個時間點對照可以看出,B2 雲端儲存正快速取代傳統備份業務,成為公司的主要營收來源與成長引擎(來源:Backblaze 2026 Q1 10-Q、2025 Q4/全年財報新聞稿、Blocks & Files 產業媒體報導)。
 
+**2026 Q2 更新(2026/8/3 公布)**:總營收 4,271 萬美元,年增 18%(為 6 季來最快);B2 Cloud Storage 營收 2,660 萬美元,年增 34%(7 季來最強)。公司同步將 2026 全年營收指引由 1.615–1.635 億美元大幅上修至 **1.72–1.74 億美元**,調整後 EBITDA 利益率指引由 23–25% 上修至 27–29%,並預告 2027 年 B2 成長率將超過 40%。當季新增 RPO(未履行合約)約 3.2 億美元,其中 3.13 億美元來自 CoreWeave 單一合約,顯示成長引擎高度集中的情況在 Q2 進一步加深而非分散。
+
 地區分布(2026 Q1,10-Q):美國本土 2,800 萬美元(約 72%),國際市場合計約 1,070 萬美元(約 28%,其中英國約 5%、加拿大約 4%、其他地區約 18%)。與一年前同期(國際占比約 27%)相比變化不大,顯示公司目前仍高度集中在美國市場,國際化程度有限。
 
 ## 產業與 TAM
@@ -52,6 +54,8 @@ Backblaze 是一家美國雲端儲存公司,最早以「幫個人電腦和中小
 
 市場目前還沒完全買單,主要是因為兩件事沒解決:第一,帳面上公司 GAAP 淨利率仍是負值(約 -18%),表面數字看起來仍是虧損中的小型股;第二,CoreWeave 這筆大單占比極高,讓人擔心這是「一次性運氣」而非「趨勢常態」。要讓市場真正相信這個故事,需要看到:B2 客戶名單持續多元化(不只靠 CoreWeave)、B2 營收成長率能維持在 20% 以上數季、以及 GAAP 財報轉虧為盈——只要這幾點陸續兌現,目前偏保守的市場定價就有重新評估的壓力。
 
+**2026/8 更新**:上述「市場尚未買單」的窗口已明顯收窄。8/3 公布的 Q2 財報與大幅上修指引,加上財報後 5 家以上券商密集調高目標價,推動股價單日暴漲逾 60%、年初至今累計漲幅超過 300%;Forward P/E 已飆升至 76–107 倍(不同來源估算不一),PEG 高達 60 倍以上,估值已明顯超前於成長率本身。換言之,原本「市場半信半疑」的估值缺口已在財報後迅速收斂甚至反轉——CoreWeave 客戶集中度風險並未消失(見反方觀點),但股價已提前為「完美劇本」定價,後續能否繼續發酵取決於能否證明 B2 有機成長(排除 CoreWeave 貢獻後)同樣強勁。
+
 ## 反方觀點
 
 1. **客戶集中度與信用傳導風險被低估**:CoreWeave 合約可能貢獻 BLZE 營收四成以上,但 CoreWeave 自身財務結構高度槓桿(負債約 210 億美元、約 7 倍槓桿),而且 CoreWeave 本身高度依賴單一客戶 Microsoft(占其營收約 67%)。這代表 Backblaze 的成長故事,某種程度上是把風險「借道」CoreWeave 再借道 Microsoft——只要這條鏈任何一環出狀況(例如 Microsoft 減少採購、CoreWeave 再融資出問題),BLZE 最亮眼的成長引擎可能瞬間熄火。
@@ -62,8 +66,12 @@ Backblaze 是一家美國雲端儲存公司,最早以「幫個人電腦和中小
 
 4. **公司自稱的 TAM 需要打折扣看待**:Backblaze 主打的「2030 年 140 億美元 neocloud 儲存 TAM」是公司自己框定的細分市場估計,目前沒有找到 Gartner、IDC 等獨立研究機構的公開數字直接佐證;相較之下,第三方機構估計的整體雲端儲存市場已達 1,700~2,000 億美元量級,Backblaze 目前實際市占仍極小,能否把「市場很大」轉換成「自己吃得到的份額」,仍是未知數。
 
+5. **股價已大幅超前基本面,估值風險上升**:8/3 財報後股價單日暴漲逾 60%,Forward P/E 飆升至 70–100 倍以上區間,PEG 高達 60 倍以上(遠高於一般「合理」門檻 1-2 倍),顯示市場已為 CoreWeave 大單與指引上修的樂觀情境完全定價,一旦後續季度成長不如預期或 CoreWeave 相關風險兌現,股價回檔空間可能相當可觀。
+
+6. **新增股份稀釋**:公司於 8/3 財報同時登記約 419.5 萬股(約占已發行股數 6.8%)供轉售,主要與 CoreWeave 認股權證(履約價 $7.60)相關,雖非全新募資,仍構成潛在稀釋來源。
+
 ---
-更新日期:2026-07-31
+更新日期:2026-08-07
 
 來源:
 - Backblaze 2026 年第一季 10-Q(SEC EDGAR):https://www.sec.gov/Archives/edgar/data/0001462056/000162828026029797/blze-20260331.htm
@@ -80,5 +88,8 @@ Backblaze 是一家美國雲端儲存公司,最早以「幫個人電腦和中小
 - Wasabi Technologies 募資新聞稿:https://wasabi.com/company/newsroom/press-releases/wasabi-raises-70m-in-new-equity-to-power-the-next-era-of-data-infrastructure
 - Gartner Peer Insights,Backblaze 競爭對手列表:https://www.gartner.com/reviews/market/file-and-object-storage-platforms/vendor/backblaze/alternatives
 - LeanOps,雲端儲存定價比較(2026):https://leanopstech.com/blog/cloud-storage-pricing-comparison-2026/
+- Backblaze 2026 年第二季財報新聞稿(IR):https://ir.backblaze.com/news/news-details/2026/Backblaze-Announces-Second-Quarter-2026-Financial-Results/default.aspx
+- Yahoo Finance:「Backblaze (BLZE) 64.0% narrower...」(Q2 財報後股價反應):https://finance.yahoo.com/markets/stocks/articles/backblaze-blze-64-0-narrower-031801602.html
+- Futurum Group:「Backblaze Q2 FY 2026: CoreWeave Deal Strengthens AI Storage Position」:https://futurumgroup.com/insights/backblaze-q2-fy-2026-coreweave-deal-strengthens-ai-storage-position/
 
 本文為研究彙整,非投資建議。

@@ -59,6 +59,8 @@ Contineum 目前**沒有任何產品營收**,商業模式完全建立在「與�
 5. **IPF 這個治療領域本身還在被大藥廠加碼投資**——Boehringer Ingelheim 才在 2025 年 10 月推出十年來首個 IPF 新機轉藥物 Jascayd,顯示這不是一個被大藥廠放棄的夕陽市場,反而佐證 IPF 仍是具備商業吸引力的治療領域,間接支持 PIPE-791 的商業化前景。
 6. **但驅動整體題材群聚的總體面假設並不成立**——本週最初讓 CTNM 進入觀察名單的「降息預期帶動 9 檔生技股同步發酵」的總體假設,已經在查證後被推翻(FOMC 已於 7/29 決議維持利率不變),而且過去 90 天內乾淨可信的分析師目標價上修僅有 1 筆(大摩由 14 美元調升至 16 美元),缺乏廣泛法人買盤佐證。換言之,個股基本面(現金、管線進度)確實有改善,但尚未形成資金面驅動的群聚性動能,這也是本檔發酵分數只有 5 分、而非更高分的核心原因。
 
+**(2026/8 更新)重新查證結果**:上述「僅1筆可信上修」的結論經下一期重新查證後有所修正——財報前後(7/30-7/31)實際出現一波更集中的目標價行動:RBC $22→$23(交叉確認)、LifeSci Capital新覆蓋$24、JonesTrading新覆蓋$26(後兩筆僅單一來源,未完全交叉確認),推動發酵分數上修至8分,詳見本期(20260807)週報。惟同一時間點,創辦人暨科學長Daniel Lorrain隨財報公布同步宣布離職(研發團隊精簡所致),是新增的領導層穩定性疑慮。
+
 ## 反方觀點
 
 1. **同一分子已經失敗過一次**——PIPE-307 在 2025 年 11 月的 VISTA 試驗(多發性硬化症適應症)未能達到主要與次要療效終點。現在嬌生把賭注轉押到 MDD 適應症,但 MOONLIGHT-1 試驗才剛在 2026 年 6 月完成收案,距離讀出數據還有相當長的時間,投資人不應該把「換一個適應症」直接等同於「這次會成功」。
@@ -66,9 +68,10 @@ Contineum 目前**沒有任何產品營收**,商業模式完全建立在「與�
 3. **IPF 競爭態勢正在惡化,而非改善**——Boehringer Ingelheim 剛以 Jascayd 拿下十年來首個 IPF 新機轉藥物核准(2025 年 10 月美國、2026 年 7 月歐盟),同時該公司仍握有市佔龍頭 Ofev(2025 年全球銷售約 43 億美元)。等到 PIPE-791 在 2028 年中讀出 Phase 2 數據時,很可能已經面對一個由同一家大藥廠主導、且已具備成熟商業化基礎設施的新競品,先行者優勢有限。
 4. **公司目前是零營收,現金消耗速度仍是變數**——2026 年第一、二季皆認列 0 美元營收,「跑道到 2029 年中」的估計建立在目前的研發支出節奏上,一旦後續試驗需要擴大規模或追加適應症,這個時間表可能隨時被壓縮。
 5. **市場買盤信念尚未廣泛形成**——過去 90 天內僅有 1 筆乾淨可信的分析師目標價上修,顯示這波題材目前仍偏向少數機構的個別判斷,還沒有形成大範圍的共識買盤,追高風險需要留意。
+6. **(2026/8更新)創辦人暨科學長離職,執行力疑慮**——Daniel Lorrain(公司創辦人、科學長)於2026/8/7財報公布同時去職,伴隨研發團隊精簡與探索階段項目縮編。EPS優於預期主因研發費用下降(裁員/精簡所致),而非管線進度加速或商業化貢獻,「beat」的含金量需審慎看待。
 
 ---
-更新日期:2026-07-31
+更新日期:2026-08-07
 來源:
 - [Contineum Therapeutics 10-Q(FY2026 Q1,截至 2026/3/31)— SEC EDGAR](https://www.sec.gov/Archives/edgar/data/0001855175/000162828026030614/ctnm-20260331.htm)
 - [Contineum Therapeutics 10-K(FY2025)— SEC EDGAR](https://www.sec.gov/Archives/edgar/data/1855175/000162828026015165/ctnm-20251231.htm)
@@ -83,5 +86,7 @@ Contineum 目前**沒有任何產品營收**,商業模式完全建立在「與�
 - [Contineum-J&J drug fails to improve vision in Phase 2 MS trial(VISTA)— FierceBiotech](https://www.fiercebiotech.com/biotech/contineums-jj-partnered-ms-drug-fails-improve-vision-phase-2)
 - [MOONLIGHT-1 Depression Research Study — Johnson & Johnson Clinical Trials](https://moonlight-1.clinicaltrials.jnj.com/)
 - [J&J-Partnered Contineum Corrals $110M From IPO — MedCity News(J&J 授權交易條款背景)](https://medcitynews.com/2024/04/jj-partnered-contineum-corrals-110m-from-ipo-for-clinical-trials-in-fibrosis-ms/)
+- [Contineum Therapeutics CSO Daniel Lorrain Sells Stock(內部人交易背景報導)— Investing.com](https://www.investing.com/news/insider-trading-news/contineum-therapeutics-cso-daniel-lorrain-sells-54862-in-stock-93CH-4720605)
+- [Contineum Therapeutics 8-K Exhibit 99.1(2026年第二季財報)— SEC EDGAR](https://www.sec.gov/Archives/edgar/data/0001855175/000162828026051051/q220268kex991.htm)
 
 本文為研究彙整,非投資建議。

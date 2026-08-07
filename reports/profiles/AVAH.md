@@ -41,6 +41,8 @@ Aveanna 財報分成三大事業部，以下為 2025 全年（財年至 2026/1/3
 
 整體看，Aveanna 在「兒童居家私人看護（PDN）」這個利基市場規模最大、地位最穩固，但在成人居家健康／安寧、醫材配送等鄰接市場，面對規模更大（BrightSpring）、更聚焦（Option Care Health）或資訊不透明（Elara Caring）的對手，並非無可挑戰的龍頭。
 
+**（2026/8 更新）治理面小變動**：獨立董事 Dr. Erica Schwartz（原兼任 UnitedHealth Group 高階主管）因獲美國參議院於 2026/8/5 確認出任 CDC 局長，依提名時的利益衝突承諾於 8/7（8-K）辭去董事會職位，並將於 90 天內出清持股；公司聲明其離任「非因營運或政策歧見」，屬行政性人事異動而非基本面利空，但也意味著其與 UnitedHealth（公司主要付款方之一）的董事會關聯性隨之消除。Q2 2026 財報預計 2026/8/13 公布，尚未涵蓋於本次更新。
+
 ## 敘事發酵為什麼可能成立
 六個訊號可以串成一條完整的因果鏈：①13 州在 2025-2026 年陸續調升 Medicaid 居家看護費率，直接墊高 PDS 事業部（占營收逾八成）的單位收入；②公司同時用 1.755 億美元現金完成 Family First Homecare 併購，一次拿下 7 州 27 個據點，把費率調升的順風與併購擴張的規模同時疊加到營收線上；③財報端立刻反映：連續 9 季 EPS 優於預期、14 季營收優於預期，顯示這不是單一事件，而是持續兌現的趨勢；④信評機構 Moody's 在 2026/5 把公司評級從展望調升為「B2 穩定」（而非僅是「正向展望」），代表外部信用評等機構認可其基本面已實質改善，不只是市場自嗨；⑤股價過去 12 個月上漲約 144%，反映市場已經開始為這條敘事定價；⑥產業層級的結構性順風（65 歲以上人口年增 3.1%、去機構化政策方向）意味著即使沒有個別州費率調升的催化劑，居家醫療整體賽道也在成長，為公司提供了敘事的「地基」。這六點合起來構成一個相對完整的因果鏈：政策順風 → 併購擴大版圖 → 財報持續 beat → 信評與股價同步反映。
 
@@ -49,9 +51,10 @@ Aveanna 財報分成三大事業部，以下為 2025 全年（財年至 2026/1/3
 - **自由現金流轉負，且營收/EBITDA 品質存疑**：2026 Q1 自由現金流為 -380 萬美元，而且當季營收與 EBITDA 中約 600 萬美元來自一次性應收帳款收款，代表帳面上的「成長」有一部分並非可持續的營運改善，若未來沒有類似一次性項目撐盤，季度數字可能不如市場預期漂亮。
 - **內部人在高點密集出脫**：J.H. Whitney、Robert Williams、Paul Vigano 等大股東近期合計出售超過 1.2 億美元股票，發生在股價創下 144% 年漲幅之後，儘管不必然代表基本面轉壞，但至少說明最了解公司的內部人選擇在此時大幅降低曝險，與零售投資人此時追高的立場相反。
 - **（補充）規模與資訊落差的競爭風險**：BrightSpring 這類規模數倍於 Aveanna、且正透過併購快速擴張居家健康／安寧版圖的對手，長期可能壓縮 Aveanna 在 HHH 事業部（目前僅占營收約一成）的成長空間與議價能力。
+- **（2026/8 更新）估值缺口經重新檢驗並不成立**：以次年 EPS 成長率（約 9.8%）對比 Forward P/E（12-14x）重新檢驗，Forward P/E 實際上高於次年成長率，PEG（0.92，finviz）也未低於 0.7 門檻，顯示「市場尚未相信」的估值折價論點證據薄弱；股價已距 52 週高點僅約 8%、較 52 週低點上漲逾 150%，市場對其成長性已有相當程度的認可。
 
 ---
-更新日期：2026-07-31
+更新日期：2026-08-07
 來源：
 - https://www.globenewswire.com/news-release/2026/03/19/3258850/0/en/Aveanna-Healthcare-Holdings-Announces-Fourth-Quarter-and-Full-Year-2025-Financial-Results.html
 - https://www.globenewswire.com/news-release/2026/05/14/3294732/0/en/Aveanna-Healthcare-Holdings-Announces-First-Quarter-Financial-Results-and-Revised-2026-Guidance.html
@@ -66,5 +69,7 @@ Aveanna 財報分成三大事業部，以下為 2025 全年（財年至 2026/1/3
 - https://newsroom.davita.com/2026-02-02-elara-caring-secures-new-strategic-investment-from-ares-and-davita/
 - https://homehealthcarenews.com/2026/02/elara-caring-backed-by-ares-private-equity-group-kidney-care-provider-davita/
 - https://homehealthcarenews.com/2026/03/aveannas-175-5m-acquisition-strengthens-companys-in-home-pediatric-care-play/
+- https://www.sec.gov/Archives/edgar/data/0001832332/000119312526340409/（董事辭任8-K）
+- https://www.npr.org/2026/08/05/nx-s1-5920379/cdc-director-confirmed-erica-schwartz
 
 本文為研究彙整，非投資建議。
