@@ -5,6 +5,7 @@
 
 | 日期 | 週報 | 評估檔數 | 高分標的(≥7) |
 |---|---|---|---|
+| 2026-08-28 | [fermentation_20260828](fermentation_20260828.md) | 2(與08/21同一份08-21收盤快照,沿用分數+增量查證;streak陳舊49天未採用) | TTAN(8) |
 | 2026-08-21 | [fermentation_20260821](fermentation_20260821.md) | 2(candidates恢復產出2檔；streak陳舊42天，本期起不再沿用舊快照) | TTAN(8) |
 | 2026-08-14 | [fermentation_20260814](fermentation_20260814.md) | 12(candidates本期0檔,沿用streak 20260710舊快照【第三週】,與過去兩期相同12檔) | IMMX(9)、DAVE(8)、KYMR(8)、ACRS(8)、CTNM(8)、KURA(8)、BLLN(8)、DYN(7) |
 | 2026-08-07 | [fermentation_20260807](fermentation_20260807.md) | 12(candidates本期0檔,沿用streak 20260710舊快照,與上週相同12檔) | IMMX(9)、ACRS(8)、CTNM(8)、KYMR(8)、DAVE(7)、DYN(7)、HNGE(7)、BLLN(7) |
