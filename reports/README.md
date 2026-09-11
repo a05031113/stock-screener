@@ -5,6 +5,7 @@
 
 | 日期 | 週報 | 評估檔數 | 高分標的(≥7) |
 |---|---|---|---|
+| 2026-09-11 | [fermentation_20260911](fermentation_20260911.md) | 0(candidates本週仍0檔;streak已連續6週以上故障,本期調閱最新09/05 run #45 log確認根因不變,並發現repo內有未合併的修復分支fix/batch-retry-fail-loud,詳見報告4.2節) | 無 |
 | 2026-09-04 | [fermentation_20260904](fermentation_20260904.md) | 0(candidates本週0檔；streak已連續8週故障，本期查到精確根因：Yahoo批次下載被限流，40/3354觸發50%覆蓋率保護閾值中止，詳見報告4.2節) | 無 |
 | 2026-08-28 | [fermentation_20260828](fermentation_20260828.md) | 2(與08/21同一份08-21收盤快照,沿用分數+增量查證;streak陳舊49天未採用) | TTAN(8) |
 | 2026-08-21 | [fermentation_20260821](fermentation_20260821.md) | 2(candidates恢復產出2檔；streak陳舊42天，本期起不再沿用舊快照) | TTAN(8) |
