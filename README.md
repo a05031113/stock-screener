@@ -46,20 +46,40 @@ Settings → Actions → General → Workflow permissions → 選 **Read and wri
 
 ## 執行時間
 
-- 自動：每週五美東收盤後（台灣時間週六凌晨 5:00）
-- 手動：GitHub Actions 頁面 → Run workflow
+- 自動：本機 macOS launchd，台北時間**週六 06:00** 主跑、**18:00** 補跑
+  （主跑成功時補跑由 freshness check 自動跳過）。結果 push 回 GitHub `main`，
+  週日早上的雲端敘事發酵 routine 再讀取 `output/` 產出週報。
+- 手動備援：GitHub Actions 頁面 → Run workflow（排程已停用；Yahoo 對 CI IP 限流，
+  批次下載在 Actions 上長期失敗，見 `docs/superpowers/specs/2026-09-17-local-launchd-screener-design.md`）
 
 ## 本地執行
 
 ```bash
-pip install -r requirements.txt
+# 一次性安裝
+uv venv --python 3.13 .venv
+uv pip install --python .venv/bin/python -r requirements.txt
 
-# 設定環境變數
-export TELEGRAM_BOT_TOKEN=xxx
-export TELEGRAM_CHAT_ID=xxx
+# 手動跑一次（含 pull / freshness check / commit / push）
+bash run_screener.sh
 
-python main.py
+# 只跑 screener、不碰 git
+.venv/bin/python main.py
 ```
+
+### 安裝 launchd 排程
+
+```bash
+cp launchd/com.yanghaoyu.stock-screener.plist ~/Library/LaunchAgents/
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.yanghaoyu.stock-screener.plist
+
+# 立刻觸發一次 / 查看狀態 / 卸載
+launchctl kickstart -k gui/$(id -u)/com.yanghaoyu.stock-screener
+launchctl print gui/$(id -u)/com.yanghaoyu.stock-screener | head -20
+launchctl bootout gui/$(id -u)/com.yanghaoyu.stock-screener
+```
+
+Log 在 `logs/launchd_stdout.log`、`logs/launchd_stderr.log`。
+`main.py` 本身不需要 Telegram 環境變數；通知由 `report-notify.yml` 承接。
 
 ## 輸出格式
 

@@ -1,13 +1,10 @@
 name: Weekly Early Momentum Screener
 
+# 排程已停用：Yahoo 對 GitHub Actions 出口 IP 限流，批次下載長期失敗。
+# 正式執行改由本機 launchd（launchd/com.yanghaoyu.stock-screener.plist +
+# run_screener.sh）每週六跑，結果 push 回 main。此 workflow 只留手動備援。
 on:
-  schedule:
-    # 美股週五收盤後（美東 16:00 = UTC 21:00 = 台灣週六凌晨 05:00）
-    - cron: '0 21 * * 5'
-    # 週六 09:00 UTC 補跑：若主跑撞上 Yahoo 對 CI IP 的時段性限流而失敗，
-    # 換 12 小時後的時段重試；主跑成功時由 freshness 檢查直接跳過
-    - cron: '0 9 * * 6'
-  workflow_dispatch:  # 允許手動觸發
+  workflow_dispatch:
 
 permissions:
   contents: write

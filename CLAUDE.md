@@ -4,16 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Early momentum stock screener that finds stocks in the early stage of major moves (like LITE before its parabolic run). Uses Finviz for pre-filtering, then applies a two-layer scoring system: technical (12-point) + fundamental (7-point). Sends results via Telegram every Friday after US market close via GitHub Actions.
+Early momentum stock screener that finds stocks in the early stage of major moves (like LITE before its parabolic run). Uses Finviz for pre-filtering, then applies a two-layer scoring system: technical (12-point) + fundamental (7-point). Runs every Saturday morning (Taipei) on the owner's Mac via launchd (`run_screener.sh` + `launchd/*.plist`), commits `output/*.csv` back to `main`; a downstream cloud routine then writes the weekly fermentation report and `report-notify.yml` sends Telegram. The GitHub Actions `screener.yml` is manual-only fallback (Yahoo rate-limits CI IPs).
 
 ## Commands
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies (uv venv, Python 3.13 to match CI)
+uv venv --python 3.13 .venv
+uv pip install --python .venv/bin/python -r requirements.txt
 
-# Run full pipeline (Finviz filter → scoring → Telegram)
-python main.py
+# Run full pipeline the way launchd does (git pull → freshness check → main.py → commit/push)
+bash run_screener.sh
+
+# Run pipeline only (Finviz filter → scoring → CSV), no git
+.venv/bin/python main.py
 
 # Run screener only (no notification)
 python screener.py
@@ -56,6 +60,6 @@ Both are required for notifications. Set as GitHub Secrets for CI.
 - Finviz pre-filter reduces universe from ~7000 to ~300, cutting execution time from 60-80 min to ~10 min
 - Technical scoring runs before fundamental to minimize yfinance API calls
 - SPY benchmark downloaded once and reused for all relative strength calculations
-- GitHub Actions workflow has 30-minute timeout
-- CI sends Telegram alert on failure
-- Output CSVs are committed back to the repo by the CI bot
+- Production runs on the owner's Mac via launchd (Sat 06:00 + 18:00 Taipei); `run_screener.sh` mirrors the old CI steps, including committing partial output when the streak stage fails
+- GitHub Actions `screener.yml` keeps only `workflow_dispatch` — Yahoo batch downloads fail from CI IPs
+- Output CSVs are committed back to `main` by whichever runner produced them

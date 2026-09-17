@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.yanghaoyu.stock-screener</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/yanghaoyu/stock-screener/run_screener.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/yanghaoyu/stock-screener</string>
+
+    <!-- 台北時間週六 06:00 主跑（美股週五收盤後）、18:00 補跑；
+         主跑成功時補跑由 run_screener.sh 的 freshness check 直接跳過。
+         雲端敘事發酵 routine 於週日 ~06:40 讀取結果。 -->
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Weekday</key>
+            <integer>6</integer>
+            <key>Hour</key>
+            <integer>6</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key>
+            <integer>6</integer>
+            <key>Hour</key>
+            <integer>18</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+    </array>
+
+    <key>StandardOutPath</key>
+    <string>/Users/yanghaoyu/stock-screener/logs/launchd_stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/yanghaoyu/stock-screener/logs/launchd_stderr.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>HOME</key>
+        <string>/Users/yanghaoyu</string>
+    </dict>
+</dict>
+</plist>
