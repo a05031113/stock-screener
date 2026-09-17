@@ -49,8 +49,8 @@ Settings → Actions → General → Workflow permissions → 選 **Read and wri
 - 自動：本機 macOS launchd，台北時間**週六 06:00** 主跑、**18:00** 補跑
   （主跑成功時補跑由 freshness check 自動跳過）。結果 push 回 GitHub `main`，
   週日早上的雲端敘事發酵 routine 再讀取 `output/` 產出週報。
-- 手動備援：GitHub Actions 頁面 → Run workflow（排程已停用；Yahoo 對 CI IP 限流，
-  批次下載在 Actions 上長期失敗，見 `docs/superpowers/specs/2026-09-17-local-launchd-screener-design.md`）
+- 手動備援：GitHub Actions 頁面 → Run workflow（排程已停用；序列掃描 2000+ 檔約 60～70 分鐘，
+  Actions 的 timeout 吃不下，且 Yahoo 對 CI IP 更嚴，見 `docs/superpowers/specs/2026-09-17-local-launchd-screener-design.md`）
 
 ## 本地執行
 

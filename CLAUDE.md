@@ -61,5 +61,6 @@ Both are required for notifications. Set as GitHub Secrets for CI.
 - Technical scoring runs before fundamental to minimize yfinance API calls
 - SPY benchmark downloaded once and reused for all relative strength calculations
 - Production runs on the owner's Mac via launchd (Sat 06:00 + 18:00 Taipei); `run_screener.sh` mirrors the old CI steps, including committing partial output when the streak stage fails
-- GitHub Actions `screener.yml` keeps only `workflow_dispatch` — Yahoo batch downloads fail from CI IPs
+- Never use `yf.download` batch mode: a burst gets the whole IP rate-limited (serial requests included) for ~30 min+, regardless of CI vs home IP. `_download_daily_closes` is serial-only with cooldowns; `tests/test_download_daily_closes.py` pins that contract (`.venv/bin/python -m unittest discover -s tests`)
+- GitHub Actions `screener.yml` keeps only `workflow_dispatch` — the 60-min job timeout can't absorb a serial 2000-ticker scan
 - Output CSVs are committed back to `main` by whichever runner produced them

@@ -104,3 +104,23 @@
    後 `launchctl kickstart -k gui/$(id -u)/com.yanghaoyu.stock-screener`：
    在 launchd 環境下 freshness check 應跳過（因步驟 2 已產出當日檔）
 4. 隔週日確認 `fermentation_*.md` 有標的
+
+## 補記（2026-09-17 實跑後）
+
+原設計假設「程式碼不用改，家用 IP 就不會被限流」。第一次本機實跑推翻了這點：
+
+- candidates 段（逐檔 `Ticker.history`）199 檔全部正常
+- streak 段 `yf.download` 批次 38/2180 後連續空 chunk，**且隨後整個 IP 被封**
+  （單檔 `AAPL.history()` 也回 `YFRateLimitError`），約 30 分鐘後解封
+
+結論與 `fix/batch-retry-fail-loud` 分支 7/19 的診斷一致：Yahoo 懲罰的是批次 burst
+模式本身，與 IP 類型無關。因此追加變更：
+
+- `_download_daily_closes` 改為**純序列、永不批次**：每檔一次 `history(period="8mo")`、
+  檔間 0.5s；連續 30 次失敗（含靜默回空）→ 冷卻 120s，最多 6 次；第一輪失敗的 ticker
+  做一輪補抓；覆蓋率 < 50% 仍 raise
+- 移除 `import yfinance.shared`（只有批次路徑用到）
+- 新增 `tests/test_download_daily_closes.py`（stdlib unittest，mock 掉 yfinance）
+  釘住上述契約
+- 預估 streak 段 2180 檔約 60～70 分鐘；本機 launchd 無 timeout，週六 06:00 起跑
+  綽綽有餘
