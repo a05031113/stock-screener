@@ -311,6 +311,10 @@ def score_fundamental(info: dict) -> tuple[int, list[str]]:
 # ── 主流程 ────────────────────────────────────────────────────────────────
 
 
+class NoPriceData(Exception):
+    """Yahoo 對這個代號沒有任何價格資料（404 時 history() 靜默回空）"""
+
+
 def screen_ticker(
     ticker: str, spy_close: pd.Series | None = None, meta: dict | None = None
 ) -> dict | None:
@@ -318,6 +322,8 @@ def screen_ticker(
         ticker_obj = yf.Ticker(ticker)
         df = ticker_obj.history(period="2y")
 
+        if df.empty:
+            raise NoPriceData(ticker)
         if len(df) < 252:  # 需要至少 1 年完整資料
             return None
 
@@ -367,6 +373,8 @@ def screen_ticker(
             "fund_signals": ", ".join(fund_labels),
         }
 
+    except NoPriceData:
+        raise
     except (KeyError, ValueError, IndexError) as e:
         logger.debug(f"Skip {ticker}: {e}")
         return None
@@ -387,11 +395,16 @@ def run_screener(
 
     candidates = []
     total = len(tickers)
+    no_data = 0
     logger.info(f"Screening {total} tickers...")
 
     for i, ticker in enumerate(tickers, 1):
         meta = metadata.get(ticker) if metadata else None
-        result = screen_ticker(ticker, spy_close, meta)
+        try:
+            result = screen_ticker(ticker, spy_close, meta)
+        except NoPriceData:
+            no_data += 1
+            result = None
         if result:
             candidates.append(result)
             logger.info(
@@ -404,6 +417,18 @@ def run_screener(
                 logger.info(f"[{i}/{total}] processed...")
 
         time.sleep(batch_delay)
+
+    # 防線：universe 大半在 Yahoo 查無資料 = 上游代號壞了（finvizfinance 解析
+    # bug）或整個 IP 被封，不是「本週沒有標的」。靜默寫出 0 檔會讓這種故障
+    # 躲好幾週，所以直接紅掉
+    if total and no_data > total * 0.5:
+        raise RuntimeError(
+            f"{no_data}/{total} tickers returned no price data from Yahoo — "
+            "universe tickers are probably broken (or IP blocked); refusing to "
+            "write an empty candidates CSV"
+        )
+    if no_data:
+        logger.warning(f"{no_data}/{total} tickers had no price data on Yahoo")
 
     df = pd.DataFrame(candidates)
     if not df.empty:

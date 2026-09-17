@@ -105,22 +105,33 @@
    在 launchd 環境下 freshness check 應跳過（因步驟 2 已產出當日檔）
 4. 隔週日確認 `fermentation_*.md` 有標的
 
-## 補記（2026-09-17 實跑後）
+## 補記（2026-09-17/18 實跑後）：真正的根因是 finvizfinance，不是 Yahoo 限流
 
-原設計假設「程式碼不用改，家用 IP 就不會被限流」。第一次本機實跑推翻了這點：
+第一次本機實跑 streak 段仍然 38/2180 後全空，且隨後整個 IP 被 Yahoo 封約 30 分鐘。
+改成純序列後第二次實跑在第 66 檔又「連續失敗」。逐檔開 HTTP 回應碼才看到真相：
 
-- candidates 段（逐檔 `Ticker.history`）199 檔全部正常
-- streak 段 `yf.download` 批次 38/2180 後連續空 chunk，**且隨後整個 IP 被封**
-  （單檔 `AAPL.history()` 也回 `YFRateLimitError`），約 30 分鐘後解封
+- 失敗的請求是 **404**，不是 429；前 120 檔有 115 檔 404，代號全是 `AA*`
+- Finviz overview 的 Company 欄對得上真公司，但 Ticker 欄被多加了一次首字母：
+  `AABSI`=Absci(`ABSI`)、`BBBNX`=Beta Bionics(`BBNX`)、`DDHT`=DHT(`DHT`)
+- 這是 `finvizfinance==1.3.0` 對 Finviz 改版頁面的解析 bug；`1.5.0`（2026-08-29）已修正，
+  實測 ticker 正確
 
-結論與 `fix/batch-retry-fail-loud` 分支 7/19 的診斷一致：Yahoo 懲罰的是批次 burst
-模式本身，與 IP 類型無關。因此追加變更：
+連鎖效應（全部從 7 月底開始，與 Actions 失敗時間吻合）：
 
-- `_download_daily_closes` 改為**純序列、永不批次**：每檔一次 `history(period="8mo")`、
-  檔間 0.5s；連續 30 次失敗（含靜默回空）→ 冷卻 120s，最多 6 次；第一輪失敗的 ticker
-  做一輪補抓；覆蓋率 < 50% 仍 raise
-- 移除 `import yfinance.shared`（只有批次路徑用到）
-- 新增 `tests/test_download_daily_closes.py`（stdlib unittest，mock 掉 yfinance）
-  釘住上述契約
-- 預估 streak 段 2180 檔約 60～70 分鐘；本機 launchd 無 timeout，週六 06:00 起跑
-  綽綽有餘
+- candidates 段：假代號在 Yahoo 全 404 → `history()` 靜默回空 → `screen_ticker` 回 `None`
+  → 每週 **0 檔**（看起來像門檻嚴，其實是餵進去的代號不存在）
+- streak 段：同樣 404 → 覆蓋率 <50% → `RuntimeError`，程式把它記成「限流」
+- 批次併發狂打幾千個 404 才真的把 IP 打到 429；7 月 `fix/batch-retry-fail-loud` 的
+  「2565 檔全空、零 exception」觀察也是同一個 bug
+- 8/21 的 `SSD`、`TTAN` 是 `S`+`SD`、`T`+`TAN` 碰巧撞到真實存在的代號，屬假訊號
+
+因此最終變更：
+
+- `requirements.txt`：`finvizfinance==1.5.0`
+- `_download_daily_closes` 改為純序列（每檔一次 `history`、0.5s 間隔、連續 30 次失敗冷卻
+  120s、一輪補抓、覆蓋率 <50% raise）。本機無 timeout，2000+ 檔約 30～40 分鐘可接受，
+  且不再有把 IP 打死的風險
+- `run_screener` 新增防線：超過一半 ticker 在 Yahoo 查無資料 → `RuntimeError`，
+  不寫出 0 檔 CSV。這是讓 bug 躲了 7 週的靜默路徑
+- `tests/`（stdlib unittest + mock）釘住上述兩個契約
+- GitHub Actions 仍只留手動備援：序列掃描時間 Actions 的 timeout 吃不下
