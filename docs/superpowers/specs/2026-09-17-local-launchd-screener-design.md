@@ -52,8 +52,9 @@
 1. `cd ~/stock-screener`；所有 log 行前綴時間戳
 2. 同步遠端：`git pull --ff-only origin main`。若 `output/` 以外有未提交變更
    → 中止並以非零 exit 結束，不硬跑
-3. Freshness check：最新 `output/candidates_*.csv` 的日期距今 ≤ 3 天，
-   且同日 `output/streak_<date>.csv` 存在 → log「本週已完成」→ exit 0。
+3. Freshness check：最新 `output/candidates_*.csv` 是**今天**的，
+   且同日 `output/streak_<date>.csv` 存在 → log「本次已完成」→ exit 0。
+   （主跑與補跑同一天，同日即可；CI 原本的 ≤3 天會讓週間手動跑擋掉週六排程）
    日期解析用 `date -j -f '%Y%m%d'`（macOS 無 `date -d`）
 4. 執行 `.venv/bin/python main.py`，記錄 exit code，不立刻結束
 5. 不論步驟 4 成敗：`git add output/`；有 staged 變更才

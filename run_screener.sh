@@ -27,14 +27,15 @@ if ! git pull --ff-only origin main; then
   exit 2
 fi
 
-# ── 2. freshness check：candidates + streak 同日 CSV 都在且 ≤3 天 → 本週已完成 ──
+# ── 2. freshness check：candidates + streak 同日 CSV 都在且是今天的 → 本次已完成 ──
+#    主跑 06:00 與補跑 18:00 同一天，所以「同日」就夠；週間手動跑不會擋掉週六排程
 latest=$(ls output/candidates_*.csv 2>/dev/null | sort | tail -1)
 if [ -n "$latest" ]; then
   file_date=$(basename "$latest" .csv | cut -d_ -f2)
   file_ts=$(date -j -f '%Y%m%d' "$file_date" '+%s' 2>/dev/null || echo 0)
   age_days=$(( ( $(date '+%s') - file_ts ) / 86400 ))
-  if [ "$age_days" -le 3 ] && [ -f "output/streak_${file_date}.csv" ]; then
-    log INFO "results for $file_date already complete (${age_days}d old), skipping run"
+  if [ "$age_days" -le 0 ] && [ -f "output/streak_${file_date}.csv" ]; then
+    log INFO "results for $file_date already complete today, skipping run"
     exit 0
   fi
 fi
