@@ -5,6 +5,7 @@
 
 | 日期 | 週報 | 評估檔數 | 高分標的(≥7) |
 |---|---|---|---|
+| 2026-09-25 | [fermentation_20260925](fermentation_20260925.md) | 12(candidates本週異常暴增至232檔，依total_score/return_3m排序取前12；streak群聚訊號佐證能源/航運題材為本期最強跨清單群聚，但未貢獻額外候選標的） | NVGS(8)、CVX(7) |
 | 2026-09-18 | [fermentation_20260918](fermentation_20260918.md) | 12(candidates與streak管線同步恢復正常產出；本期12檔中3檔為併購/私有化套利中的標的〔BWMN、BWIN、MG〕，框架前提已被固定收購價封頂） | GFR(8)、SMCI(9)、PUBM(7) |
 | 2026-09-11 | [fermentation_20260911](fermentation_20260911.md) | 0(candidates本週仍0檔;streak已連續6週以上故障,本期調閱最新09/05 run #45 log確認根因不變,並發現repo內有未合併的修復分支fix/batch-retry-fail-loud,詳見報告4.2節) | 無 |
 | 2026-09-04 | [fermentation_20260904](fermentation_20260904.md) | 0(candidates本週0檔；streak已連續8週故障，本期查到精確根因：Yahoo批次下載被限流，40/3354觸發50%覆蓋率保護閾值中止，詳見報告4.2節) | 無 |
