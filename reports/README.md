@@ -5,6 +5,7 @@
 
 | 日期 | 週報 | 評估檔數 | 高分標的(≥7) |
 |---|---|---|---|
+| 2026-10-17 | [fermentation_20261017](fermentation_20261017.md) | 12(candidates本週暴增至48檔，依total_score/tech_score/rel_vol排序取前12；streak本期0檔未貢獻標的；本期連續三期以來首次無標的達≥7分，候選結構偏向大型成熟公司〔資產管理/產險/整合型石油/工業設備龍頭〕；CRGY查證發現10/8公告收購Devon Energy的Eagle Ford資產，次年EPS下修幅度收斂） | 無 |
 | 2026-10-10 | [fermentation_20261010](fermentation_20261010.md) | 12(candidates本週26檔，依total_score/tech_score/rel_vol排序取前12；streak本期0檔未貢獻標的；其中PCRX經查證為10/8公告、即將完成交割的併購套利標的〔Viatris以$36.50現金收購〕，非敘事發酵；HPK的M&A狀態自上期「探索出售」演變為引入印尼主權資本的可轉換優先股再融資） | OPRT(9)、FSLY(8) |
 | 2026-10-03 | [fermentation_20261003](fermentation_20261003.md) | 12(candidates本週29檔，依total_score/tech_score/rel_vol排序取前12；streak本期0檔未貢獻標的；其中WBD、ATKR、QRVO三檔經查證為即將完成交割的併購套利標的，非敘事發酵） | WK(9) |
 | 2026-09-25 | [fermentation_20260925](fermentation_20260925.md) | 12(candidates本週異常暴增至232檔，依total_score/return_3m排序取前12；streak群聚訊號佐證能源/航運題材為本期最強跨清單群聚，但未貢獻額外候選標的） | NVGS(8)、CVX(7) |
